@@ -1,0 +1,392 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.big-container {
+  font-family: "Poppins", sans-serif;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/********************************* Navbar *********************************/
+.dropdown {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 10vh;
+  background-color: rgb(19, 75, 139);
+}
+
+.nav-content-container {
+  width: 20vw;
+  margin-right: 5rem;
+  display: flex;
+  justify-content: space-around;
+}
+
+.brand {
+  color: white;
+  font-size: 1.5rem;
+  padding-left: 5rem;
+  font-weight: bold;
+}
+
+.button-nav:hover {
+  transition: all 0.2s ease;
+  transform: scale(1.1);
+}
+
+.algorithm-dropdown,
+.datastructure-dropdown {
+  position: relative;
+}
+
+.algorithm-dropdown ul,
+.datastructure-dropdown ul {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  visibility: hidden;
+  left: -2rem;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  background: white;
+  list-style: none;
+  border-radius: 5px;
+  display: flex;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.algorithm-dropdown li,
+.datastructure-dropdown li {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.algorithm-dropdown li:hover,
+.datastructure-dropdown li:hover {
+  /*Something strange is happening here....*/
+  background-color: #326fa8;
+  color: white;
+  transition: all 0.5s ease;
+  transform: scale(1.2);
+}
+
+.dropdown button {
+  background: none;
+  text-decoration: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.algorithm-dropdown button:focus + ul,
+.datastructure-dropdown button:focus + ul {
+  visibility: visible;
+  transform: translateY(10px);
+  transition: all 0.5s ease;
+}
+
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+.arrow {
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  margin-left: 8px;
+  margin-bottom: 3px;
+}
+
+/********************************* 3 main containers (table of contents, illstration and code) *********************************/
+.main-container {
+  display: flex;
+  height: 90vh;
+  width: 100vw;
+}
+
+.table-contents-container {
+  flex: 0.3;
+}
+
+.illustration-container {
+  flex: 1;
+}
+
+.code-container {
+  flex: 0.6;
+}
+
+/********************************* Table of contents *********************************/
+.table-contents-container,
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: white;
+  padding-top: 5rem;
+  text-transform: uppercase;
+  animation: dropDown 0.5s ease-out;
+  cursor: pointer;
+}
+
+.operation {
+  width: 100%;
+}
+
+.operation li {
+  color: white;
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 20px;
+  width: 100%;
+  list-style: none;
+  animation: slideIn 0.5s ease-out;
+  height: 40px;
+  font-weight: 500;
+}
+
+.operation li:hover {
+  background-color: wheat;
+  cursor: pointer;
+  color: black;
+}
+
+.background-color {
+  background-color: #326fa8;
+  animation: appear 1s ease forwards;
+}
+
+/********************************* Illustraion container *********************************/
+.illustration-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.linklist-illu-intro-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  animation: appear 0.8s ease;
+  position: relative;
+  margin-top: 30px;
+}
+
+.cell-container {
+  position: relative;
+  height: 50px;
+  width: auto;
+  display: flex;
+  margin-right: 30px;
+}
+
+.cell-container:last-of-type {
+  margin-right: 0px;
+}
+
+.cell {
+  border: 1px solid white;
+  height: 50px;
+  width: 50px;
+  background-color: yellowgreen;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.cell.null::before,
+.cell.null::after {
+  content: "";
+  height: 50px;
+  width: 2px;
+  background-color: black;
+  position: absolute;
+}
+
+.cell.null::before {
+  transform: rotate(45deg);
+}
+
+.cell.null::after {
+  transform: rotate(-45deg);
+}
+
+.icon {
+  left: 80%;
+  transform: translateY(100%);
+  transform: scaleX(2.2);
+  position: absolute;
+}
+
+.null {
+  position: absolute;
+}
+
+/********************************* Code container *********************************/
+.code-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.code {
+  animation: appear 0.8s ease-in;
+  padding: 0 20px 0 20px;
+}
+
+/********************************* All the animations *********************************/
+@keyframes slideIn {
+  from {
+    transform: translateX(-50px);
+  }
+  to {
+    transform: translateX(0px);
+  }
+}
+
+@keyframes dropDown {
+  from {
+    transform: translateY(-50px);
+  }
+  to {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes moveRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(260%);
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes disappear {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes lightUpSearch {
+  0%,
+  100% {
+    background-color: yellowgreen;
+  }
+  50% {
+    background-color: yellow;
+  }
+}
+
+/************ Linked List operation ************/
+.linkList-insert-illu {
+  height: 100%;
+  width: 100%;
+}
+
+.head-null-insert,
+.normal-insert {
+  height: 50%;
+  width: 100%;
+}
+
+.head-null-insert,
+.normal-insert {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: slideIn 0.8s ease;
+}
+
+.new-cell {
+  animation: appear 1s ease forwards 3s;
+  opacity: 0;
+}
+
+.cell.remove-move-right {
+  animation: moveRight 1s ease-out forwards 2s;
+}
+
+.new-cell-pointer {
+  position: absolute;
+  opacity: 0;
+  right: 125px;
+  animation: appear 1s ease forwards 3.8s;
+}
+
+.appear-pointer-linked-list {
+  animation: appear 1s ease forwards 2s;
+  opacity: 0;
+}
+
+.toggle-choose {
+  background-color: wheat;
+  color: black !important;
+}
+
+.code-image-container {
+  height: 50vh;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url(/image/insert_Linked_List.png);
+  animation: appear 1s ease 0.6s forwards;
+  opacity: 0;
+}
+
+.added-cell {
+  position: relative;
+  opacity: 0;
+  animation: appear 1s ease forwards 3s;
+}
+
+.tobe-inserted-cell {
+  transform: translateY(-120%);
+  position: absolute;
+  animation: disappear 1s ease forwards 3s;
+}
+
+.search-cell {
+  animation: lightUpSearch 2s ease 1s;
+}
