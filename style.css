@@ -10,7 +10,10 @@
   font-family: "Poppins", sans-serif;
   height: 100vh;
   width: 100vw;
-  overflow: hidden;
+}
+
+:root {
+  --img: url();
 }
 
 /********************************* Navbar *********************************/
@@ -18,12 +21,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 10vh;
+  height: 15vh;
   background-color: rgb(19, 75, 139);
 }
 
 .nav-content-container {
-  width: 20vw;
+  width: 25vw;
   margin-right: 5rem;
   display: flex;
   justify-content: space-around;
@@ -31,8 +34,8 @@
 
 .brand {
   color: white;
-  font-size: 1.5rem;
-  padding-left: 5rem;
+  font-size: 2rem;
+  padding-left: 3em;
   font-weight: bold;
 }
 
@@ -43,7 +46,10 @@
 
 .algorithm-dropdown,
 .datastructure-dropdown {
+  padding: 10px;
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 
 .algorithm-dropdown ul,
@@ -52,16 +58,17 @@
   width: 200px;
   height: 200px;
   visibility: hidden;
-  left: -2rem;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  background: white;
+  background: #f0eded;
   list-style: none;
-  border-radius: 5px;
+  border-radius: 10px;
   display: flex;
   cursor: pointer;
   overflow: hidden;
+  top: 50px;
+  z-index: 2;
 }
 
 .algorithm-dropdown li,
@@ -87,9 +94,10 @@
   text-decoration: none;
   border: none;
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.5em;
   cursor: pointer;
   font-weight: bold;
+  font-family: "Poppins", sans-serif;
 }
 
 .algorithm-dropdown button:focus + ul,
@@ -116,7 +124,7 @@
 /********************************* 3 main containers (table of contents, illstration and code) *********************************/
 .main-container {
   display: flex;
-  height: 90vh;
+  height: 85vh;
   width: 100vw;
 }
 
@@ -144,9 +152,9 @@
 .title {
   text-align: center;
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 1.5em;
   color: white;
-  padding-top: 5rem;
+  padding-top: 5em;
   text-transform: uppercase;
   animation: dropDown 0.5s ease-out;
   cursor: pointer;
@@ -159,13 +167,14 @@
 .operation li {
   color: white;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.5em;
   margin-top: 20px;
   width: 100%;
   list-style: none;
   animation: slideIn 0.5s ease-out;
   height: 40px;
   font-weight: 500;
+  padding: 5px;
 }
 
 .operation li:hover {
@@ -184,6 +193,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 20px;
 }
 
 .linklist-illu-intro-container {
@@ -194,25 +204,21 @@
   margin: 0 auto;
   animation: appear 0.8s ease;
   position: relative;
-  margin-top: 30px;
+  margin: 30px 0px 30px 0px;
 }
 
 .cell-container {
   position: relative;
-  height: 50px;
+  height: 7vh;
   width: auto;
   display: flex;
   margin-right: 30px;
 }
 
-.cell-container:last-of-type {
-  margin-right: 0px;
-}
-
 .cell {
   border: 1px solid white;
-  height: 50px;
-  width: 50px;
+  height: 6vh;
+  width: 4vw;
   background-color: yellowgreen;
   position: relative;
   align-items: center;
@@ -225,7 +231,7 @@
 .cell.null::before,
 .cell.null::after {
   content: "";
-  height: 50px;
+  height: 5vh;
   width: 2px;
   background-color: black;
   position: absolute;
@@ -251,71 +257,11 @@
 }
 
 /********************************* Code container *********************************/
-.code-container {
+.code {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.code {
   animation: appear 0.8s ease-in;
-  padding: 0 20px 0 20px;
-}
-
-/********************************* All the animations *********************************/
-@keyframes slideIn {
-  from {
-    transform: translateX(-50px);
-  }
-  to {
-    transform: translateX(0px);
-  }
-}
-
-@keyframes dropDown {
-  from {
-    transform: translateY(-50px);
-  }
-  to {
-    transform: translateY(0px);
-  }
-}
-
-@keyframes moveRight {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(260%);
-  }
-}
-
-@keyframes appear {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes disappear {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes lightUpSearch {
-  0%,
-  100% {
-    background-color: yellowgreen;
-  }
-  50% {
-    background-color: yellow;
-  }
 }
 
 /************ Linked List operation ************/
@@ -370,9 +316,16 @@
   width: 100%;
   background-repeat: no-repeat;
   background-size: contain;
-  background-image: url(/image/insert_Linked_List.png);
+  background-image: var(--img);
   animation: appear 1s ease 0.6s forwards;
   opacity: 0;
+}
+
+.code-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
 }
 
 .added-cell {
@@ -382,11 +335,250 @@
 }
 
 .tobe-inserted-cell {
-  transform: translateY(-120%);
+  transform: translateY(120%);
   position: absolute;
   animation: disappear 1s ease forwards 3s;
 }
 
-.search-cell {
-  animation: lightUpSearch 2s ease 1s;
+.text-result {
+  animation: appear 1s ease forwards 4.5s;
+  opacity: 0;
+}
+
+.text-result-2 {
+  animation: appear 1s ease forwards 6.5s;
+  opacity: 0;
+}
+
+.tobe-deleted {
+  animation: disappear 0.5s ease forwards 4.5s;
+}
+
+.remove-move-left {
+  animation: moveLeft 1s ease-out forwards 5.5s;
+}
+
+.remove-move-left-2 {
+  animation: moveLeft2 1s ease-out forwards 5.5s;
+}
+
+tr th,
+tr td {
+  height: auto;
+  width: auto;
+  padding: 15px;
+  background-origin: padding-box;
+  border: 1px solid black;
+  margin: 0 auto;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+.linkedListComplexityTable {
+  opacity: 0;
+}
+
+.burger {
+  display: none;
+  cursor: pointer;
+}
+
+.burger div {
+  width: 25px;
+  height: 2px;
+  background-color: rgb(226, 226, 226);
+  margin: 5px;
+  transition: all 0.3s ease;
+}
+
+/********************************* On smaller screen *********************************/
+@media only screen and (max-width: 1400px) {
+  .algorithm-dropdown ul,
+  .datastructure-dropdown ul {
+    top: 80px;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .main-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .burger {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    display: block;
+  }
+
+  .table-contents-container {
+    position: absolute;
+    left: 0;
+    height: 85vh;
+    width: 20vw;
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+    z-index: 2;
+  }
+
+  .cell.null::before,
+  .cell.null::after {
+    height: 3vh;
+  }
+
+  .cell {
+    font-size: 1.2em;
+    width: 6vw;
+  }
+
+  .dropdown button {
+    font-size: 1.2em;
+  }
+
+  .cell-container {
+    margin-right: 20px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .brand {
+    font-size: 1.2em;
+    padding-left: 5em;
+  }
+
+  .dropdown button {
+    font-size: 1em;
+  }
+
+  .operation li {
+    font-size: 1em;
+  }
+
+  .cell {
+    font-size: 1em;
+    width: 8vw;
+  }
+
+  .title {
+    font-size: 1em;
+  }
+
+  .table-contents-container {
+    width: 30vw;
+  }
+
+  h3 {
+    font-size: 1em;
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  .cell {
+    font-size: 0.8em;
+    width: 8vw;
+    height: 4vh;
+  }
+
+  .cell.null::before,
+  .cell.null::after {
+    height: 2vh;
+    width: 1px;
+  }
+
+  .burger {
+    top: 40px;
+  }
+
+  .dropdown {
+    justify-content: center;
+  }
+
+  .brand {
+    display: none;
+  }
+
+  .nav-content-container {
+    margin-right: 0;
+  }
+}
+
+.burger-active {
+  transform: translateX(0%);
+}
+
+/********************************* All the animations *********************************/
+@keyframes slideIn {
+  from {
+    transform: translateX(-50px);
+  }
+  to {
+    transform: translateX(0px);
+  }
+}
+
+@keyframes dropDown {
+  from {
+    transform: translateY(-50px);
+  }
+  to {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes moveRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes disappear {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes lightUp {
+  0%,
+  100% {
+    background-color: yellowgreen;
+  }
+  50% {
+    background-color: yellow;
+  }
+}
+
+@keyframes moveLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-120%);
+  }
+}
+
+@keyframes moveLeft2 {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-250%);
+  }
 }
