@@ -14,6 +14,7 @@
 
 :root {
   --img: url();
+  --height: 15vh;
 }
 
 /********************************* Navbar *********************************/
@@ -21,7 +22,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 15vh;
+  height: var(--height);
   background-color: rgb(19, 75, 139);
 }
 
@@ -121,6 +122,19 @@
   margin-bottom: 3px;
 }
 
+.burger {
+  display: none;
+  cursor: pointer;
+}
+
+.burger div {
+  width: 25px;
+  height: 2px;
+  background-color: rgb(226, 226, 226);
+  margin: 5px;
+  transition: all 0.3s ease;
+}
+
 /********************************* 3 main containers (table of contents, illstration and code) *********************************/
 .main-container {
   display: flex;
@@ -175,6 +189,7 @@
   height: 40px;
   font-weight: 500;
   padding: 5px;
+  height: auto;
 }
 
 .operation li:hover {
@@ -196,7 +211,8 @@
   margin: 20px;
 }
 
-.linklist-illu-intro-container {
+.linklist-illu-intro-container,
+.queue-illu-intro-container {
   display: flex;
   width: 100%;
   justify-content: center;
@@ -209,10 +225,19 @@
 
 .cell-container {
   position: relative;
-  height: 7vh;
   width: auto;
   display: flex;
   margin-right: 30px;
+  align-items: center;
+  padding: 2px;
+}
+
+.cell-container-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 2px;
 }
 
 .cell {
@@ -246,9 +271,9 @@
 }
 
 .icon {
-  left: 80%;
+  left: 95%;
   transform: translateY(100%);
-  transform: scaleX(2.2);
+  transform: scaleX(1.6);
   position: absolute;
 }
 
@@ -319,6 +344,7 @@
   background-image: var(--img);
   animation: appear 1s ease 0.6s forwards;
   opacity: 0;
+  filter: drop-shadow(4px 4px 3px black);
 }
 
 .code-container {
@@ -340,12 +366,17 @@
   animation: disappear 1s ease forwards 3s;
 }
 
-.text-result {
+.text-result-fast {
+  animation: appear 1s ease forwards 3s;
+  opacity: 0;
+}
+
+.text-result-medium {
   animation: appear 1s ease forwards 4.5s;
   opacity: 0;
 }
 
-.text-result-2 {
+.text-result-slow {
   animation: appear 1s ease forwards 6.5s;
   opacity: 0;
 }
@@ -376,28 +407,94 @@ table {
   border-collapse: collapse;
 }
 
-.linkedListComplexityTable {
+.complexityTable {
   opacity: 0;
 }
 
-.burger {
-  display: none;
-  cursor: pointer;
+.found-fast {
+  animation: found 1s ease forwards 1.5s;
 }
 
-.burger div {
-  width: 25px;
-  height: 2px;
-  background-color: rgb(226, 226, 226);
-  margin: 5px;
-  transition: all 0.3s ease;
+/************ Queue operation ************/
+.queue-illu-intro-container {
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+}
+
+.header {
+  animation: slideIn 1s ease;
+}
+
+.transparent {
+  visibility: hidden;
+}
+
+.tobe-inserted-queue {
+  animation: moveRight-2-queue 1s linear forwards 2s;
+}
+
+.inserted-queue {
+  animation: changeBackground-queue 0.1s linear forwards 3s;
+  opacity: 0;
+}
+
+.disappear {
+  animation: disappear 0.2s ease forwards 2s;
+}
+
+.linklist-illu-intro-container.queue,
+.stack-illu-intro-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.queue-illu-intro-container.queue {
+  margin: 0px 30px 0px 0px;
+}
+
+/************ Stack operation ************/
+.stack-illu-intro-container {
+  align-items: center;
+  animation: appear 1s ease forwards;
+  opacity: 0;
+}
+
+.icon-rotate {
+  transform: rotate(270deg);
+}
+
+.tobe-inserted-stack {
+  transform: translate(-150%, -150%);
+  animation: insert-stack 2s linear forwards 2s;
+}
+
+.stack-illu-container {
+  border: 2px solid black;
+  border-top: none;
+}
+
+.tobe-removed-stack {
+  animation: remove-stack 2s linear forwards 2s;
 }
 
 /********************************* On smaller screen *********************************/
+@media only screen and (min-width: 1600px) {
+  .cell.null::before,
+  .cell.null::after {
+    height: 3vh;
+  }
+}
+
 @media only screen and (max-width: 1400px) {
   .algorithm-dropdown ul,
   .datastructure-dropdown ul {
     top: 80px;
+  }
+
+  .cell.null::before,
+  .cell.null::after {
+    height: 3vh;
+    width: 2px;
   }
 }
 
@@ -409,7 +506,7 @@ table {
 
   .burger {
     position: absolute;
-    top: 50px;
+    top: calc(var(--height) / 2);
     left: 20px;
     display: block;
   }
@@ -459,7 +556,6 @@ table {
 
   .cell {
     font-size: 1em;
-    width: 8vw;
   }
 
   .title {
@@ -470,7 +566,8 @@ table {
     width: 30vw;
   }
 
-  h3 {
+  h3,
+  h4 {
     font-size: 1em;
   }
 }
@@ -488,10 +585,6 @@ table {
     width: 1px;
   }
 
-  .burger {
-    top: 40px;
-  }
-
   .dropdown {
     justify-content: center;
   }
@@ -503,10 +596,29 @@ table {
   .nav-content-container {
     margin-right: 0;
   }
+
+  tr th,
+  tr td {
+    padding: 8px;
+  }
 }
 
 .burger-active {
   transform: translateX(0%);
+}
+
+@media only screen and (max-width: 1024px) and (orientation: landscape) {
+  .dropdown {
+    height: 22vh;
+  }
+
+  .operation li {
+    font-size: 1.2em;
+  }
+
+  .table-contents-container {
+    height: auto;
+  }
 }
 
 /********************************* All the animations *********************************/
@@ -533,7 +645,7 @@ table {
     transform: translateX(0);
   }
   to {
-    transform: translateX(250%);
+    transform: translateX(260%);
   }
 }
 
@@ -565,6 +677,15 @@ table {
   }
 }
 
+@keyframes found {
+  0% {
+    background-color: yellowgreen;
+  }
+  100% {
+    background-color: yellow;
+  }
+}
+
 @keyframes moveLeft {
   from {
     transform: translateX(0);
@@ -580,5 +701,51 @@ table {
   }
   to {
     transform: translateX(-250%);
+  }
+}
+
+@keyframes moveRight-2-queue {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(180%);
+    opacity: 0;
+  }
+}
+
+@keyframes changeBackground-queue {
+  0% {
+    background-color: white;
+    opacity: 0;
+  }
+  100% {
+    background-color: yellowgreen;
+    opacity: 1;
+  }
+}
+
+@keyframes insert-stack {
+  0% {
+    transform: translate(-150%, -150%);
+  }
+  50% {
+    transform: translate(0%, -125%);
+  }
+  100% {
+    transform: translate(0%, 0%);
+  }
+}
+
+@keyframes remove-stack {
+  0% {
+    transform: translate(0%, 0%);
+  }
+  50% {
+    transform: translate(0%, -125%);
+  }
+  100% {
+    transform: translate(150%, -150%);
   }
 }
