@@ -208,7 +208,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 20px;
+  margin: 10px;
+  position: relative;
 }
 
 .linklist-illu-intro-container,
@@ -279,6 +280,19 @@
 
 .null {
   position: absolute;
+}
+
+.text {
+  font-weight: 100;
+  font-family: "Poppins", sans-serif;
+}
+
+.text-left {
+  transform: translate(-150%, -5px);
+}
+
+.text-right {
+  transform: translate(5px, -5px);
 }
 
 /********************************* Code container *********************************/
@@ -412,7 +426,7 @@ table {
 }
 
 .found-fast {
-  animation: found 1s ease forwards 1.5s;
+  animation: found 1s ease forwards 3s;
 }
 
 /************ Queue operation ************/
@@ -430,7 +444,7 @@ table {
 }
 
 .tobe-inserted-queue {
-  animation: moveRight-2-queue 1s linear forwards 2s;
+  animation: moveRight-2-queue 1s linear forwards 3s;
 }
 
 .inserted-queue {
@@ -452,6 +466,21 @@ table {
   margin: 0px 30px 0px 0px;
 }
 
+.icon-down {
+  position: absolute;
+  bottom: 120%;
+}
+
+.appear-fast {
+  animation: appear 0.5s forwards 3s;
+  opacity: 0;
+}
+
+.appear {
+  animation: appear 0.2s forwards 2s;
+  opacity: 0;
+}
+
 /************ Stack operation ************/
 .stack-illu-intro-container {
   align-items: center;
@@ -464,7 +493,7 @@ table {
 }
 
 .tobe-inserted-stack {
-  transform: translate(-150%, -150%);
+  transform: translate(-150%, -125%);
   animation: insert-stack 2s linear forwards 2s;
 }
 
@@ -477,11 +506,87 @@ table {
   animation: remove-stack 2s linear forwards 2s;
 }
 
-/********************************* On smaller screen *********************************/
+.icon-left {
+  position: absolute;
+  transform: translateX(250%);
+}
+
+/************ Hash Table operation ************/
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 20px;
+  height: 100%;
+  width: 100%;
+}
+
+.grid-col {
+  flex-direction: column;
+  display: flex;
+}
+
+.flex-container-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 100%;
+}
+
+.text-header-hash-table {
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: bold;
+}
+
+.icon-right {
+  position: absolute;
+  transform: scaleX(4);
+  top: 5px;
+}
+
+.hash-table-cell {
+  height: 5vh;
+  text-align: center;
+  width: 100%;
+  position: relative;
+}
+
+.hash-function {
+  background-color: lightblue;
+}
+
+.icon-right-1 {
+  right: -30px;
+}
+
+.icon-right-2 {
+  right: -10px;
+}
+
+.hashed-key,
+.hash-key-inserted,
+.hash-key-inserted-2 {
+  opacity: 0;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+/********************************* On other screen *********************************/
 @media only screen and (min-width: 1600px) {
   .cell.null::before,
   .cell.null::after {
     height: 3vh;
+  }
+
+  .icon-left {
+    transform: translateX(320%);
+  }
+
+  .hash-table-bucket td {
+    padding: 50px;
   }
 }
 
@@ -538,6 +643,14 @@ table {
   .cell-container {
     margin-right: 20px;
   }
+
+  .hash-table-bucket td {
+    padding: 8px !important;
+  }
+
+  .hash-function {
+    background-color: white;
+  }
 }
 
 @media only screen and (max-width: 768px) {
@@ -570,6 +683,10 @@ table {
   h4 {
     font-size: 1em;
   }
+
+  .hash-table-bucket td {
+    padding: 0px 10px 0px 10px !important;
+  }
 }
 
 @media only screen and (max-width: 550px) {
@@ -601,10 +718,50 @@ table {
   tr td {
     padding: 8px;
   }
+
+  .flex-container-col {
+    justify-content: flex-end !important;
+  }
 }
 
 .burger-active {
   transform: translateX(0%);
+}
+
+@media only screen and (min-width: 400px) and (max-width: 550px) {
+  .icon-right-1 {
+    right: -20px !important;
+  }
+
+  .icon-right {
+    transform: scaleX(3) !important;
+  }
+
+  .icon-right-2 {
+    right: -10px !important;
+  }
+
+  .hash-table-bucket td {
+    padding: 12px;
+  }
+}
+
+@media only screen and (min-width: 320px) and (max-width: 400px) {
+  .icon-right-1 {
+    right: -25px !important;
+  }
+
+  .icon-right {
+    transform: scaleX(2) !important;
+  }
+
+  .icon-right-2 {
+    right: -10px !important;
+  }
+
+  .hash-table-bucket td {
+    padding: 5px;
+  }
 }
 
 @media only screen and (max-width: 1024px) and (orientation: landscape) {
@@ -618,6 +775,12 @@ table {
 
   .table-contents-container {
     height: auto;
+  }
+}
+
+@media only screen and (max-width: 768px) and (orientation: landscape) {
+  .hash-table-bucket td {
+    padding: 0px 5px 0px 5px;
   }
 }
 
@@ -728,10 +891,10 @@ table {
 
 @keyframes insert-stack {
   0% {
-    transform: translate(-150%, -150%);
+    transform: translate(-150%, -125%);
   }
   50% {
-    transform: translate(0%, -125%);
+    transform: translate(0%, -100%);
   }
   100% {
     transform: translate(0%, 0%);
@@ -743,9 +906,18 @@ table {
     transform: translate(0%, 0%);
   }
   50% {
-    transform: translate(0%, -125%);
+    transform: translate(0%, -100%);
   }
   100% {
-    transform: translate(150%, -150%);
+    transform: translate(150%, -125%);
   }
 }
+/******Test zone*******/
+/* .redo-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  pointer-events: all;
+  z-index: 2;
+} */

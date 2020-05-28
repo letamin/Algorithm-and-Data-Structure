@@ -19,13 +19,13 @@ const dataStructureObjec = [
     {
         name: "Stack",
         description: "In computer science, a stack is an abstract data type that serves as a collection of elements, with two principal operations: <br>• Push (adds a element to the collection ) and <br>• Pop (removes the most recently added element that was not yet remove). <br>The order in which elements come off a stack gives rise to its alternative name, LIFO (last in, first out). Additionally, a peek operation may give access to the top without modifying the stack. The name stack for this type of structure comes from the analogy to a set of physical items stacked on top of each other, which makes it easy to take an item off the top of the stack, while getting to an item deeper in the stack may require taking off multiple other items first.",
-        operation: ['Push', 'Pop', 'Peek', 'isEmpty-isFull', 'Complexity'],
-        complexity: {
-            push: 'O(1)',
-            pop: 'O(1)',
-            peek: 'O(1)'
-        }
+        operation: ['Push', 'Pop', 'Peek', 'isEmpty-isFull', 'Complexity']
     },
+    {
+        name: "Hash Table",
+        description: "In computing, a hash table (hash map) is a data structure which implements an associative array abstract data type, a structure that can map keys to values. A hash table uses a hash function to compute an index into an array of buckets or slots, from which the desired value can be found.",
+        operation: ['Insert', 'Collisions', 'Delete', 'Find', 'Complexity']
+    }
 ];
 
 initialize();
@@ -80,7 +80,7 @@ function displayTableContent(dataObject) {
         dataOperationUL.appendChild(dataOperationArray[index]);
     })
     dataOperationUL.classList.add('operation');
-    tableContentContainer.appendChild(dataOperationUL)
+    tableContentContainer.appendChild(dataOperationUL);
 
     displayOperation(dataObject, dataOperationArray);
 
@@ -279,6 +279,7 @@ function displayOperation(dataObject, dataOperationArray) {
                 tableContentContainer.classList.remove('burger-active');
                 data.classList.remove('toggle-choose');
                 switch (data.innerHTML) {
+                    //Queue Enqueue
                     case 'Enqueue':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
 
@@ -290,18 +291,27 @@ function displayOperation(dataObject, dataOperationArray) {
                                             class="fas fa-long-arrow-alt-right icon disappear"></i></div>
                                 </div>
                                 <div class="cell-container queue-illu-intro-container">
-                                    <div class="cell inserted-queue">9</div>
-                                    <div class="cell">26</div>
+                                    <div class="cell inserted-queue">9
+                                        <i class="fas fa-arrow-down icon-down appear-fast">
+                                            <span class="null text-left text">Rear</span>
+                                        </i>
+                                    </div>
+                                    <div class="cell">26
+                                        <i class="fas fa-arrow-down icon-down disappear">
+                                            <span class="null text-left text">Rear</span>
+                                        </i>
+                                    </div>
                                     <div class="cell">7</div>
                                     <div class="cell">5<i class="fas fa-long-arrow-alt-right icon"></i></div>
                                 </div>
                             </div>
-                            <h3 class="text-result-fast">9 is added to the rear of the Queue</h3>`
+                            <h3 class="text-result-medium">9 is added to the rear of the Queue</h3>`
                         queueEnqueueIllustration.classList.add('flex-container');
                         illustrationContainer.appendChild(queueEnqueueIllustration);
 
                         addCodeImage(codeContainer, data.innerHTML, dataObject.name);
                         break;
+                    //Queue Dequeue
                     case 'Dequeue':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
 
@@ -309,19 +319,26 @@ function displayOperation(dataObject, dataOperationArray) {
                         queueDequeueIllustration.innerHTML =
                             `<div class="linklist-illu-intro-container queue">
                                 <div class="cell-container queue-illu-intro-container queue">
-                                    <div class="cell transparent">9</div>
+                                    <div class="cell">9</div>
                                     <div class="cell">1</div>
                                     <div class="cell">26</div>
-                                    <div class="cell">7</div>
-                                    <div class="cell tobe-inserted-queue">5<i class="fas fa-long-arrow-alt-right icon disappear"></i></div>
+                                    <div class="cell">7
+                                        <i class="fas fa-long-arrow-alt-right icon text-result-medium"></i>
+                                        <i class="fas fa-arrow-down icon-down appear-fast"><span class="null text text-right">Front</span></i>
+                                    </div>
+                                    <div class="cell tobe-deleted">5
+                                        <i class="fas fa-long-arrow-alt-right icon disappear"></i>
+                                        <i class="fas fa-arrow-down icon-down disappear"><span class="null text text-right">Front</span></i>
+                                    </div>
                                 </div>
                             </div>
-                            <h3 class="text-result-fast">5 is removed from the front of the Queue</h3>`
+                            <h3 class="text-result-medium">5 is removed from the front of the Queue</h3>`
                         queueDequeueIllustration.classList.add("flex-container");
                         illustrationContainer.appendChild(queueDequeueIllustration);
 
                         addCodeImage(codeContainer, data.innerHTML, dataObject.name);
                         break;
+                    //Queue Peek
                     case 'Peek':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
 
@@ -333,15 +350,19 @@ function displayOperation(dataObject, dataOperationArray) {
                                     <div class="cell">1</div>
                                     <div class="cell">26</div>
                                     <div class="cell">7</div>
-                                    <div class="cell found-fast">5<i class="fas fa-long-arrow-alt-right icon"></i></div>
+                                    <div class="cell found-fast">5
+                                        <i class="fas fa-long-arrow-alt-right icon"></i>
+                                        <i class="fas fa-arrow-down icon-down text-result-fast"><span class="null text text-right">Front</span></i>
+                                    </div>
                                 </div>
                             </div>
-                            <h3 class="text-result-fast">5 is return as the value at the front of the Queue</h3>`
+                            <h3 class="text-result-medium">5 is return as the value at the front of the Queue</h3>`
                         queuePeekIllustration.classList.add('flex-container');
                         illustrationContainer.appendChild(queuePeekIllustration);
 
                         addCodeImage(codeContainer, data.innerHTML, dataObject.name);
                         break;
+                    //Queue check if it is empty or full
                     case 'isEmpty-isFull':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
 
@@ -355,8 +376,13 @@ function displayOperation(dataObject, dataOperationArray) {
                                         <div class="cell-container queue-illu-intro-container">
                                             <div class="cell transparent">1</div>
                                             <div class="cell transparent">26</div>
-                                            <div class="cell">7</div>
-                                            <div class="cell">5<i class="fas fa-long-arrow-alt-right icon"></i></div>
+                                            <div class="cell">7
+                                                <i class="fas fa-arrow-down icon-down"><span class="null text-left text">Rear</span></i>
+                                            </div>
+                                            <div class="cell">5
+                                                <i class="fas fa-long-arrow-alt-right icon"></i>
+                                                <i class="fas fa-arrow-down icon-down"><span class="null text text-right">Front</span></i>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -367,10 +393,15 @@ function displayOperation(dataObject, dataOperationArray) {
                                 <div class="linklist-illu-intro-container">
                                     <div class="linklist-illu-intro-container">
                                         <div class="cell-container queue-illu-intro-container">
-                                            <div class="cell">1</div>
+                                            <div class="cell">1
+                                                <i class="fas fa-arrow-down icon-down"><span class="null text-left text">Rear</span></i>
+                                            </div>
                                             <div class="cell">26</div>
                                             <div class="cell">7</div>
-                                            <div class="cell">5<i class="fas fa-long-arrow-alt-right icon"></i></div>
+                                            <div class="cell">5
+                                                <i class="fas fa-long-arrow-alt-right icon"></i>
+                                                <i class="fas fa-arrow-down icon-down"><span class="null text text-right">Front</span></i>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -380,6 +411,7 @@ function displayOperation(dataObject, dataOperationArray) {
 
                         addCodeImage(codeContainer, data.innerHTML, dataObject.name);
                         break;
+                    //Queue complexity table
                     case 'Complexity':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
 
@@ -413,83 +445,292 @@ function displayOperation(dataObject, dataOperationArray) {
                 tableContentContainer.classList.remove('burger-active');
                 data.classList.remove('toggle-choose');
                 switch (data.innerHTML) {
+                    //Stack Push
                     case 'Push':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
 
                         var stackPushIllustration = document.createElement('div');
                         stackPushIllustration.innerHTML =
                             `<div class="stack-illu-container cell-container-col">
-                                <div class="cell tobe-inserted-stack">1</div>
-                                <div class="cell">26</div>
+                                <div class="cell tobe-inserted-stack">1
+                                    <i class="fas fa-arrow-left icon-left text-result-medium">
+                                        <span class="null text">Top</span>
+                                    </i>
+                                </div>
+                                <div class="cell">26
+                                    <i class="fas fa-arrow-left icon-left tobe-deleted">
+                                        <span class="null text">Top</span>
+                                    </i>
+                                </div>
                                 <div class="cell">7</div>
                             </div>
-                            <h3 class="text-result-medium">1 is added to the end of the Stack</h3>`
+                            <h3 class="text-result-medium">1 is added to the top of the Stack</h3>`
                         stackPushIllustration.classList.add('flex-container');
                         illustrationContainer.appendChild(stackPushIllustration);
 
                         addCodeImage(codeContainer, data.innerHTML, dataObject.name);
                         break;
+                    //Stack Pop
                     case 'Pop':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
 
                         var stackPopIllustration = document.createElement('div');
                         stackPopIllustration.innerHTML =
                             `<div class="stack-illu-container cell-container-col">
-                                <div class="cell tobe-removed-stack">1</div>
-                                <div class="cell">26</div>
+                                <div class="cell tobe-removed-stack">1
+                                    <i class="fas fa-arrow-left icon-left disappear">
+                                        <span class="null text">Top</span>
+                                    </i>
+                                </div>
+                                <div class="cell">26
+                                    <i class="fas fa-arrow-left icon-left appear">
+                                        <span class="null text">Top</span>
+                                    </i>
+                                </div>
                                 <div class="cell">7</div>
                             </div>
-                            <h3 class="text-result-medium">1 is removed from the end of the Stack</h3>`
-                        stackPopIllustration.classList.add('flex-container')
+                            <h3 class="text-result-medium">1 is removed from the top of the Stack</h3>`
+                        stackPopIllustration.classList.add('flex-container');
                         illustrationContainer.appendChild(stackPopIllustration);
 
                         addCodeImage(codeContainer, data.innerHTML, dataObject.name);
                         break;
+                    //Stack Peek
                     case 'Peek':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
 
-                        addCodeImage();
+                        var stackPeekIllustration = document.createElement('div');
+                        stackPeekIllustration.innerHTML =
+                            `<div class="stack-illu-intro-container">
+                            <div class="cell-container-col stack-illu-container">
+                                <div class="cell found-fast">1
+                                    <i class="fas fa-arrow-left icon-left appear-fast">
+                                        <span class="null text">Top</span>
+                                    </i>
+                                </div>
+                                <div class="cell">26</div>
+                                <div class="cell">7</div>
+                                <div class="cell">9</div>
+                            </div>
+                            <h3 class="text-result-fast">1 is return as the value at the top of the Stack</h3>`
+                        stackPeekIllustration.classList.add('flex-container');
+                        illustrationContainer.appendChild(stackPeekIllustration);
+
+                        addCodeImage(codeContainer, data.innerHTML, dataObject.name);
+                        break;
+                    //Stack check if it is empty or full
+                    case 'isEmpty-isFull':
+                        clearEverythingForOperationDisplay(data, dataOperationArray);
+
+                        var stackIsEmptyIsFull = document.createElement('div');
+                        stackIsEmptyIsFull.innerHTML =
+                            `<div class="head-null-insert">
+                                <h3>Is Empty</h3>
+                                <h4 class="text-result-fast">Return false as the Stack is not empty</h4>
+                                <div class="stack-illu-intro-container">
+                                    <div class="cell-container-col stack-illu-container">
+                                        <div class="cell">1
+                                            <i class="fas fa-arrow-left icon-left">
+                                                <span class="null text">Top</span>
+                                            </i>
+                                        </div>
+                                        <div class="cell">26</div>
+                                        <div class="cell">7</div>
+                                        <div class="cell">9</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="normal-insert">
+                                <h3>Is Full</h3>
+                                <h4 class="text-result-fast">Return true as the Stack is full</h4>
+                                <div class="stack-illu-intro-container">
+                                    <div class="cell-container-col stack-illu-container">
+                                        <div class="cell">1
+                                            <i class="fas fa-arrow-left icon-left">
+                                                <span class="null text">Top</span>
+                                            </i>
+                                        </div>
+                                        <div class="cell">26</div>
+                                        <div class="cell">7</div>
+                                        <div class="cell">9</div>
+                                    </div>
+                                </div>
+                            </div>`
+                        stackIsEmptyIsFull.classList.add('linkList-insert-illu');
+                        illustrationContainer.appendChild(stackIsEmptyIsFull);
+
+                        addCodeImage(codeContainer, data.innerHTML, dataObject.name);
+                        break;
+                    //Stack Complexity table
+                    case 'Complexity':
+                        clearEverythingForOperationDisplay(data, dataOperationArray);
+
+                        var complexityTable = document.createElement('table');
+                        complexityTable.innerHTML =
+                            `<thead>
+                                <tr>
+                                    <th scope="col">Push</th>
+                                    <th scope="col">Pop</th>
+                                    <th scope="col">Peek</th>
+                                    <th scope="col">isEmpty<br>isFull</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>O(1)</td>
+                                    <td>O(1)</td>
+                                    <td>O(1)</td>
+                                    <td>O(1)</td>
+                                </tr>
+                            </tbody>`
+
+                        addComplexityTable(complexityTable);
+                        break;
+                }
+            })
+        })
+    } else if (dataObject.name == 'Hash Table') {
+        dataOperationArray.forEach(data => {
+            data.addEventListener('click', () => {
+                tableContentContainer.classList.remove('burger-active');
+                data.classList.remove('toggle-choose');
+                switch (data.innerHTML) {
+                    //Hash Table Insert
+                    case 'Insert':
+                        clearEverythingForOperationDisplay(data, dataOperationArray);
+                        hashTableInsertAndCollisionIllustration(data.innerHTML);
+                        addCodeImage(codeContainer, data.innerHTML, dataObject.name);
+                        break;
+                    //Hash Table Collisions
+                    case 'Collisions':
+                        clearEverythingForOperationDisplay(data, dataOperationArray);
+                        hashTableInsertAndCollisionIllustration(data.innerHTML);
+                        addCodeImage(codeContainer, data.innerHTML, dataObject.name);
+                        break;
+                    case 'Delete':
+                        clearEverythingForOperationDisplay(data, dataOperationArray);
+
+                        //addCodeImage(codeContainer, data.innerHTML, dataObject.name);
+                        break;
+                    case 'Find':
+                        clearEverythingForOperationDisplay(data, dataOperationArray);
+
+                        //addCodeImage(codeContainer, data.innerHTML, dataObject.name);
                         break;
                     case 'Complexity':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
 
-                        addComplexityTable();
+                        //addCodeImage(codeContainer, data.innerHTML, dataObject.name);
                         break;
                 }
             })
         })
     }
-    // else if (dataObject.name == 'Stack') {
-    //     dataOperationArray.forEach(data => {
-    //         data.addEventListener('click', () => {
-    //             tableContentContainer.classList.remove('burger-active');
-    //             data.classList.remove('toggle-choose');
-    //             switch (data.innerHTML) {
-    //                 case 'Push':
-    //                     clearEverythingForOperationDisplay(data, dataOperationArray);
 
-    //                     addCodeImage();
-    //                     break;
-    //                 case 'Pop':
-    //                     clearEverythingForOperationDisplay(data, dataOperationArray);
+}
 
-    //                     addCodeImage();
-    //                     break;
-    //                 case 'Peek':
-    //                     clearEverythingForOperationDisplay(data, dataOperationArray);
+/* To display Hash table Insert and Collisions because they are the same.
+   However, in the case Insert, the keys are hashed perfectly with no collisons (0, 1, 2).
+   In the case Collisions, the keys are hashed to the same value (0, 2, 2).*/
+function hashTableInsertAndCollisionIllustration(operation) {
+    var key = 0;
+    if (operation == 'Insert') key = 1;
+    else key = 2;
+    var hashTableInsert = document.createElement('div');
+    hashTableInsert.innerHTML =
+        `<div class="head-null-insert">
+            <div class="grid">
+                <div class="grid-col">
+                    <div class="text-header-hash-table">Keys</div>
+                    <div class="flex-container-col">
+                        <div class="hash-table-cell hash-tobe-inserted">"Animeme"
+                            <i class="fas fa-long-arrow-alt-right icon-right icon-right-1"></i>
+                        </div>
+                        <div class="hash-table-cell hash-tobe-inserted">"Weibubu"
+                            <i class="fas fa-long-arrow-alt-right icon-right icon-right-1"></i>
+                        </div>
+                        <div class="hash-table-cell hash-tobe-inserted">"Indianani"
+                            <i class="fas fa-long-arrow-alt-right icon-right icon-right-1"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-col">
+                    <div class="text-header-hash-table">Hash Function</div>
+                    <div class="flex-container-col hash-function">
+                        <div class="hash-table-cell"></div>
+                        <div class="hash-table-cell"></div>
+                        <div class="hash-table-cell"></div>
+                    </div>
+                </div>
+                <div class="grid-col">
+                    <div class="text-header-hash-table">Hash Code</div>
+                    <div class="flex-container-col">
+                        <div class="hash-table-cell hashed-key">0</div>
+                        <div class="hash-table-cell hashed-key">2</div>
+                        <div class="hash-table-cell hashed-key collisions">${key}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="normal-insert">
+            <table>
+                <tbody>
+                    <tr class="hash-table-bucket">
+                        <td>0</td>
+                        <td class="hash-key-inserted">Animeme</td>
+                    </tr>
+                    <tr class="hash-table-bucket">
+                        <td>1</td>
+                        <td class="hash-key-inserted-2 collisions">Indianani</td>
+                    </tr>
+                    <tr class="hash-table-bucket">
+                        <td>2</td>
+                        <td class="hash-key-inserted">Weibubu</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>`
+    hashTableInsert.classList.add('linkList-insert-illu')
+    illustrationContainer.appendChild(hashTableInsert);
 
-    //                     addCodeImage();
-    //                     break;
-    //                 case 'Complexity':
-    //                     clearEverythingForOperationDisplay(data, dataOperationArray);
+    //Text bold for the collisions
+    if (key == 2) {
+        var collisions = Array.from(document.querySelectorAll('.collisions'));
+        collisions.forEach(collision => {
+            collision.classList.add('text-bold');
+        })
+    }
 
-    //                     addComplexityTable();
-    //                     break;
-    //             }
-    //         })
-    //     })
-    // }
+    //Animation for the Keys to be inserted to the Hash Table
+    var hashKeyToBeInsert = Array.from(document.querySelectorAll('.hash-tobe-inserted'));
+    hashKeyToBeInsert.forEach((key, index) => {
+        key.style.animation = `moveRight-2-queue 1s forwards ${index + 2}s`
+    })
 
+    var keyHashed = Array.from(document.querySelectorAll('.hashed-key'));
+    keyHashed.forEach((key, index) => {
+        key.style.animation = `appear 0.5s forwards ${index + 2}s`
+    })
+
+    var hashKeyInserted = Array.from(document.querySelectorAll('.hash-key-inserted'));
+    hashKeyInserted.forEach((key, index) => {
+        key.style.animation = `appear 0.5s forwards ${index + 2}s`
+    })
+
+    var hashKeyInserted2 = document.querySelector('.hash-key-inserted-2');
+    hashKeyInserted2.style.animation = `appear 0.5s forwards 4s`;
+}
+
+//TODO: replay button
+function replayButton(dataObject, dataOperationArray) {
+    var replayButton = document.createElement('span');
+    replayButton.innerHTML = `<i class="fas fa-redo"></i>`
+    replayButton.classList.add('redo-icon');
+    illustrationContainer.appendChild(replayButton);
+
+    replayButton.addEventListener('click', () => {
+        displayOperation(dataObject, dataOperationArray)
+    })
 }
 
 //Add the complexity table for the selected data object
@@ -561,26 +802,107 @@ function displayIntro(dataObject) {
                         <div class="cell">9<i class="fas fa-long-arrow-alt-right icon"></i></div>
                     </div>
                     <div class="cell-container queue-illu-intro-container">
-                        <div class="cell">1</div>
+                        <div class="cell">1
+                            <i class="fas fa-arrow-down icon-down"><span class="null text-left text">Rear</span></i>
+                        </div>
                         <div class="cell">26</div>
                         <div class="cell">7</div>
-                        <div class="cell">5<i class="fas fa-long-arrow-alt-right icon"></i></div>
+                        <div class="cell">5
+                            <i class="fas fa-long-arrow-alt-right icon"></i>
+                            <i class="fas fa-arrow-down icon-down"><span class="null text text-right">Front</span></i>
+                        </div>
                     </div>
                 </div>`
             introTextAndIllustrationDisplay(dataObject, queueContainerIllustrationIntro);
             break;
+        //Stack intro
         case 'Stack':
             var stackContainerIllustrationIntro = document.createElement('div');
             stackContainerIllustrationIntro.innerHTML =
                 `<h3 class="header">Stack</h3>
                 <div class="stack-illu-intro-container">
                     <i class="fas fa-reply icon-rotate"></i>
-                    <div class="cell">1</div>
-                    <div class="cell">26</div>
-                    <div class="cell">7</div>
-                    <div class="cell">9</div>
+                    <div class="cell-container-col stack-illu-container">
+                        <div class="cell">1
+                            <i class="fas fa-arrow-left icon-left">
+                                <span class="null text">Top</span>
+                            </i>
+                        </div>
+                        <div class="cell">26</div>
+                        <div class="cell">7</div>
+                        <div class="cell">9</div>
+                    </div>
                 </div>`
             introTextAndIllustrationDisplay(dataObject, stackContainerIllustrationIntro);
+            break;
+        case 'Hash Table':
+            var hashTableContainerIllustrationIntro = document.createElement('div');
+            hashTableContainerIllustrationIntro.innerHTML =
+                `<div class="head-null-insert">
+                    <div class="grid">
+                        <div class="grid-col">
+                            <div class="text-header-hash-table">Keys</div>
+                            <div class="flex-container-col">
+                                <div class="hash-table-cell">"Animeme"
+                                    <i class="fas fa-long-arrow-alt-right icon-right icon-right-1"></i>
+                                </div>
+                                <div class="hash-table-cell">"Weibubu"
+                                    <i class="fas fa-long-arrow-alt-right icon-right icon-right-1"></i>
+                                </div>
+                                <div class="hash-table-cell">"Indianani"
+                                    <i class="fas fa-long-arrow-alt-right icon-right icon-right-1"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-col">
+                            <div class="text-header-hash-table">Hash Function</div>
+                            <div class="flex-container-col hash-function">
+                                <div class="hash-table-cell">
+                                    <i class="fas fa-long-arrow-alt-right icon-right icon-right-2"></i>
+                                </div>
+                                <div class="hash-table-cell">
+                                    <i class="fas fa-long-arrow-alt-right icon-right icon-right-2"></i>
+                                </div>
+                                <div class="hash-table-cell">
+                                    <i class="fas fa-long-arrow-alt-right icon-right icon-right-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-col">
+                            <div class="text-header-hash-table">Hash Code</div>
+                            <div class="flex-container-col">
+                                <div class="hash-table-cell">0</div>
+                                <div class="hash-table-cell">2</div>
+                                <div class="hash-table-cell">1</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="normal-insert">
+                    <table>
+                        <tbody>
+                            <tr class="hash-table-bucket">
+                                <td>0</td>
+                                <td>Animeme</td>
+                            </tr>
+                            <tr class="hash-table-bucket">
+                                <td>1</td>
+                                <td>Indianani</td>
+                            </tr>
+                            <tr class="hash-table-bucket">
+                                <td>2</td>
+                                <td>Weibubu</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>`
+            hashTableContainerIllustrationIntro.classList.add('linkList-insert-illu');
+            illustrationContainer.appendChild(hashTableContainerIllustrationIntro);
+
+            var textIntro = document.createElement('div');
+            textIntro.innerHTML = dataObject.description;
+            textIntro.classList.add('code')
+            codeContainer.appendChild(textIntro);
             break;
     }
 }
