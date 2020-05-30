@@ -93,12 +93,13 @@
 .dropdown button {
   background: none;
   text-decoration: none;
-  border: none;
   color: white;
   font-size: 1.5em;
   cursor: pointer;
   font-weight: bold;
   font-family: "Poppins", sans-serif;
+  border: none;
+  outline: none;
 }
 
 .algorithm-dropdown button:focus + ul,
@@ -845,6 +846,15 @@ table {
     background-color: yellowgreen;
   }
   100% {
+    background-color: yellow;
+  }
+}
+
+@keyframes found-hash {
+  from {
+    background-color: white;
+  }
+  to {
     background-color: yellow;
   }
 }

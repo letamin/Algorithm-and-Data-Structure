@@ -598,29 +598,49 @@ function displayOperation(dataObject, dataOperationArray) {
                     //Hash Table Insert
                     case 'Insert':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
-                        hashTableInsertAndCollisionIllustration(data.innerHTML);
+                        hashTableIllustration(data.innerHTML);
                         addCodeImage(codeContainer, data.innerHTML, dataObject.name);
                         break;
                     //Hash Table Collisions
                     case 'Collisions':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
-                        hashTableInsertAndCollisionIllustration(data.innerHTML);
+                        hashTableIllustration(data.innerHTML);
                         addCodeImage(codeContainer, data.innerHTML, dataObject.name);
                         break;
+                    //Hash Table Delete
                     case 'Delete':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
-
-                        //addCodeImage(codeContainer, data.innerHTML, dataObject.name);
+                        hashTableIllustration(data.innerHTML);
+                        addCodeImage(codeContainer, data.innerHTML, dataObject.name);
                         break;
+                    //Hash Table Find
                     case 'Find':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
-
-                        //addCodeImage(codeContainer, data.innerHTML, dataObject.name);
+                        hashTableIllustration(data.innerHTML);
+                        addCodeImage(codeContainer, data.innerHTML, dataObject.name);
                         break;
+                    //Hash Tabble Complexity table
                     case 'Complexity':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
 
-                        //addCodeImage(codeContainer, data.innerHTML, dataObject.name);
+                        var complexityTable = document.createElement('table');
+                        complexityTable.innerHTML =
+                            `<thead>
+                                <tr>
+                                    <th scope="col">Insert</th>
+                                    <th scope="col">Delete</th>
+                                    <th scope="col">Find</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>O(1)</td>
+                                    <td>O(1)</td>
+                                    <td>O(1)</td>
+                                </tr>
+                            </tbody>`
+
+                        addComplexityTable(complexityTable);
                         break;
                 }
             })
@@ -629,13 +649,13 @@ function displayOperation(dataObject, dataOperationArray) {
 
 }
 
-/* To display Hash table Insert and Collisions because they are the same.
+/* To display Hash table Insert, Collisions and Delete because they are the same.
    However, in the case Insert, the keys are hashed perfectly with no collisons (0, 1, 2).
    In the case Collisions, the keys are hashed to the same value (0, 2, 2).*/
-function hashTableInsertAndCollisionIllustration(operation) {
+function hashTableIllustration(operation) {
     var key = 0;
-    if (operation == 'Insert') key = 1;
-    else key = 2;
+    if (operation == 'Collisions') key = 2;
+    else key = 1;
     var hashTableInsert = document.createElement('div');
     hashTableInsert.innerHTML =
         `<div class="head-null-insert">
@@ -701,7 +721,22 @@ function hashTableInsertAndCollisionIllustration(operation) {
         })
     }
 
-    //Animation for the Keys to be inserted to the Hash Table
+
+    if (operation == 'Collisions' || operation == 'Insert') {
+        hashTableCommonAnimation();
+        hashTableInsertAndIllustrationAnimation();
+    } else if (operation == 'Delete') {
+        hashTableCommonAnimation();
+        hashTableDeleteAnimation();
+    } else {
+        hashTableCommonAnimation();
+        hashTableFindAnimation();
+    }
+
+}
+
+//Hash Table common animation (the keys move right and the display of the hashed key)
+function hashTableCommonAnimation() {
     var hashKeyToBeInsert = Array.from(document.querySelectorAll('.hash-tobe-inserted'));
     hashKeyToBeInsert.forEach((key, index) => {
         key.style.animation = `moveRight-2-queue 1s forwards ${index + 2}s`
@@ -711,7 +746,28 @@ function hashTableInsertAndCollisionIllustration(operation) {
     keyHashed.forEach((key, index) => {
         key.style.animation = `appear 0.5s forwards ${index + 2}s`
     })
+}
 
+//Hash Table Delete animation
+function hashTableDeleteAnimation() {
+    var hashKeyInserted = Array.from(document.querySelectorAll('.hash-key-inserted'));
+    hashKeyInserted.forEach(key => {
+        key.classList.add('hash-tobe-deleted');
+        key.classList.remove('hash-key-inserted');
+    })
+
+    var tobeDeletedHash = Array.from(document.querySelectorAll('.hash-tobe-deleted'));
+    tobeDeletedHash.forEach((key, index) => {
+        key.style.animation = `disappear 0.5s forwards ${index + 2}s`
+    })
+
+    var hashKeyInserted2 = document.querySelector('.hash-key-inserted-2');
+    hashKeyInserted2.classList.remove('hash-key-inserted-2');
+    hashKeyInserted2.style.animation = `disappear 0.5s forwards 4s`
+}
+
+//Hash Table Insert and Collisions animation
+function hashTableInsertAndIllustrationAnimation() {
     var hashKeyInserted = Array.from(document.querySelectorAll('.hash-key-inserted'));
     hashKeyInserted.forEach((key, index) => {
         key.style.animation = `appear 0.5s forwards ${index + 2}s`
@@ -719,6 +775,18 @@ function hashTableInsertAndCollisionIllustration(operation) {
 
     var hashKeyInserted2 = document.querySelector('.hash-key-inserted-2');
     hashKeyInserted2.style.animation = `appear 0.5s forwards 4s`;
+}
+
+//Hash Table Find animation
+function hashTableFindAnimation() {
+    var hashKeyInserted = Array.from(document.querySelectorAll('.hash-key-inserted'));
+    hashKeyInserted.forEach((key, index) => {
+        key.classList.remove('hash-key-inserted');
+        key.style.animation = `found-hash 1s ease-in-out ${index + 2}s`
+    })
+    var hashKeyInserted2 = document.querySelector('.hash-key-inserted-2');
+    hashKeyInserted2.classList.remove('hash-key-inserted-2');
+    hashKeyInserted2.style.animation = `found-hash 1s ease-in-out 4s`
 }
 
 //TODO: replay button
