@@ -1,4 +1,6 @@
 const dataStructureArray = Array.from(document.querySelectorAll(".data-structure"));
+const algorithmArray = Array.from(document.querySelectorAll(".algorithm"));
+const mainContainer = document.querySelector('.main-container');
 const tableContentContainer = document.querySelector(".table-contents-container");
 const illustrationContainer = document.querySelector('.illustration-container');
 const codeContainer = document.querySelector('.code-container');
@@ -28,6 +30,11 @@ const dataStructureObjec = [
     }
 ];
 
+const START_NODE_ROW = 10;
+const START_NODE_COL = 15;
+const FINISH_NODE_ROW = 10;
+const FINISH_NODE_COL = 35;
+
 initialize();
 
 function initialize() {
@@ -35,8 +42,161 @@ function initialize() {
     dataStructureArray.forEach((data) => {
         data.addEventListener('click', getName);
     });
+    algorithmArray.forEach(algorithm => {
+        algorithm.addEventListener('click', setContainer);
+    })
 }
 
+function setContainer(event) {
+    mainContainer.removeChild(codeContainer);
+    mainContainer.removeChild(tableContentContainer);
+
+    getInitialGrid();
+}
+
+function createNode(col, row) {
+    return {
+        col,
+        row,
+        isStart: row === START_NODE_ROW && col === START_NODE_COL,
+        isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
+        distance: Infinity,
+        isVisited: false,
+        previousNode: null
+    }
+}
+
+//Create the grid of nodes for the algorithm. The grid will be: grid[row][col]
+function getInitialGrid() {
+    const grid = [];
+    var gridContainer = document.createElement('div');
+    var visualizeButton = document.createElement('button');
+    visualizeButton.innerHTML =
+        `Visualize Dijkstra's algorithm`
+    gridContainer.appendChild(visualizeButton);
+    gridContainer.classList.add('gridContainer');
+    for (let row = 0; row < 20; row++) {
+        const currentRow = [];
+        var rowDiv = document.createElement('div');
+        for (let col = 0; col < 50; col++) {
+            var currentNode = createNode(col, row);
+            currentRow.push(createNode(col, row));
+            var node = document.createElement('div');
+            node.setAttribute("id", `node-${row}-${col}`);
+            if (currentNode.col == START_NODE_COL && currentNode.row == START_NODE_ROW) {
+                node.classList.add('node-start');
+            } else if (currentNode.col == FINISH_NODE_COL && currentNode.row == FINISH_NODE_ROW) {
+                node.classList.add('node-finish');
+            }
+            node.classList.add('node');
+            rowDiv.appendChild(node);
+
+        }
+        gridContainer.appendChild(rowDiv);
+        grid.push(currentRow);
+    }
+
+    illustrationContainer.appendChild(gridContainer)
+    const startNode = grid[START_NODE_ROW][START_NODE_COL];
+    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+
+    //Visualize Button
+    visualizeButton.addEventListener('click', () => {
+        const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
+        const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+        animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+    });
+}
+
+function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+        if (i === visitedNodesInOrder.length) {
+            setTimeout(() => {
+                animateShortestPath(nodesInShortestPathOrder);
+            }, 10 * i);
+            return;
+        }
+        setTimeout(() => {
+            const node = visitedNodesInOrder[i];
+            document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
+        }, 10 * i);
+    }
+}
+
+function animateShortestPath(nodesInShortestPathOrder) {
+    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+        setTimeout(() => {
+            const node = nodesInShortestPathOrder[i];
+            document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-shortest-path';
+        }, 50 * i);
+    }
+}
+
+/* Dijkstra's algorithm:
+    Start at the START_NODE with its distance = 0. 
+    Sort the unvisitedNodes array based on distance to get closet nodes - the first time it will be the START_NODE (distance = 0) with its unvisited neighbor nodes (up, down, left and right nodes), then update their distance with +1
+    Then sort the unvisitedNodes array with first element (START_NODE for the 1st time) removed and repeat the process until reach the FINISH_NODE. */
+function dijkstra(grid, startNode, finishNode) {
+    const visitedNodesInOrder = [];
+    startNode.distance = 0;
+    const unvisitedNodes = getAllNodes(grid);
+    while (!!unvisitedNodes.length) {
+        sortNodesByDistance(unvisitedNodes);
+        const closestNode = unvisitedNodes.shift();
+        closestNode.isVisited = true;
+        visitedNodesInOrder.push(closestNode);
+        console.log(visitedNodesInOrder)
+        if (closestNode === finishNode) return visitedNodesInOrder;
+        updateUnvisitedNeighbors(closestNode, grid);
+    }
+}
+
+//Update the distance of the unvisited nodes (closet node's distance + 1) and set its previous node = closet node
+function updateUnvisitedNeighbors(node, grid) {
+    const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
+    for (const neighbor of unvisitedNeighbors) {
+        neighbor.distance = node.distance + 1;
+        neighbor.previousNode = node;
+    }
+}
+
+//Get the unvisited neighbor nodes (up, down, left, and right nodes)
+function getUnvisitedNeighbors(node, grid) {
+    const neighbors = [];
+    const { col, row } = node;
+    if (row > 0) neighbors.push(grid[row - 1][col]);
+    if (row < grid.length - 1) neighbors.push(grid[row + 1][col]);
+    if (col > 0) neighbors.push(grid[row][col - 1]);
+    if (col < grid[0].length - 1) neighbors.push(grid[row][col + 1]);
+    return neighbors.filter(neighbor => !neighbor.isVisited);
+}
+
+function sortNodesByDistance(unvisitedNodes) {
+    unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
+}
+
+//Get all the nodes into one single array
+function getAllNodes(grid) {
+    const nodes = [];
+    for (const row of grid) {
+        for (const node of row) {
+            nodes.push(node);
+        }
+    }
+    return nodes;
+}
+
+function getNodesInShortestPathOrder(finishNode) {
+    const nodesInShortestPathOrder = [];
+    let currentNode = finishNode;
+    while (currentNode !== null) {
+        nodesInShortestPathOrder.unshift(currentNode);
+        currentNode = currentNode.previousNode;
+    }
+    return nodesInShortestPathOrder;
+}
+
+/*****************************************************************************************************/
 //Get the operation name
 function getName(event) {
     dataStructureObjec.find((obj) => {
@@ -646,7 +806,6 @@ function displayOperation(dataObject, dataOperationArray) {
             })
         })
     }
-
 }
 
 /* To display Hash table Insert, Collisions and Delete because they are the same.
@@ -721,7 +880,6 @@ function hashTableIllustration(operation) {
         })
     }
 
-
     if (operation == 'Collisions' || operation == 'Insert') {
         hashTableCommonAnimation();
         hashTableInsertAndIllustrationAnimation();
@@ -732,7 +890,6 @@ function hashTableIllustration(operation) {
         hashTableCommonAnimation();
         hashTableFindAnimation();
     }
-
 }
 
 //Hash Table common animation (the keys move right and the display of the hashed key)
