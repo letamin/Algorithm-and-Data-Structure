@@ -155,6 +155,10 @@
   flex: 0.6;
 }
 
+.hide {
+  flex: 0;
+}
+
 /********************************* Table of contents *********************************/
 .table-contents-container,
 .flex-container {
@@ -922,64 +926,6 @@ table {
     transform: translate(150%, -125%);
   }
 }
-/******Test zone*******/
-/* .redo-icon {
-  position: absolute;
-  top: 0;
-  left: 0;
-  cursor: pointer;
-  pointer-events: all;
-  z-index: 2;
-} */
-
-.node {
-  width: 25px;
-  height: 25px;
-  outline: 1px solid rgb(175, 216, 248);
-  display: inline-block;
-}
-
-.node-finish {
-  background-color: red;
-}
-
-.node-start {
-  background-color: green;
-}
-
-.gridContainer div{
-  font-size: 0px;
-}
-
-.gridContainer{
-    text-align: center;
-}
-
-.gridContainer button{
-    margin: 10px;
-}
-
-.node-shortest-path {
-  animation-name: shortestPath;
-  animation-duration: 1.5s;
-  animation-timing-function: ease-out;
-  animation-delay: 0;
-  animation-direction: alternate;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
-}
-
-.node-visited {
-  animation-name: visitedAnimation;
-  animation-duration: 1.5s;
-  animation-timing-function: ease-out;
-  animation-delay: 0;
-  animation-direction: alternate;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
-}
 
 @keyframes shortestPath {
   0% {
@@ -1019,3 +965,103 @@ table {
     background-color: rgba(0, 190, 218, 0.75);
   }
 }
+
+/************ Button animations ************/
+.btn-slide::before {
+  content: "";
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  background-color: #0af;
+  z-index: -1;
+  transition: transform 300ms ease-in-out;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.btn-slide:hover::before,
+.btn-slide:focus::before {
+  transform: scaleX(1);
+}
+
+.btn-slide {
+  transition: color 300ms ease-in-out;
+  z-index: 1;
+}
+
+.btn-slide:hover,
+.btn-slide:focus {
+  color: white;
+}
+
+.btn {
+  background-color: #e3e3e3;
+  color: #222;
+  border: none;
+  outline: none;
+  position: relative;
+  cursor: pointer;
+  padding: 0.5em 1em;
+}
+
+/********************************* Dijkstra's algorithm *********************************/
+.node {
+  width: 25px;
+  height: 25px;
+  outline: 1px solid rgb(122, 197, 255);
+  display: inline-block;
+}
+
+.node-finish {
+  background-color: rgb(156, 48, 48);
+}
+
+.node-start {
+  background-color: rgb(49, 156, 63);
+}
+
+.gridContainer div {
+  font-size: 0px;
+}
+
+.gridContainer {
+  text-align: center;
+}
+
+.gridContainer button {
+  margin: 10px;
+}
+
+.node-shortest-path {
+  animation-name: shortestPath;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+.node-visited {
+  animation-name: visitedAnimation;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+/******Test zone*******/
+/* .redo-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  pointer-events: all;
+  z-index: 2;
+} */
