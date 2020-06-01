@@ -1016,10 +1016,12 @@ table {
 
 .node-finish {
   background-color: rgb(156, 48, 48);
+  cursor: pointer;
 }
 
 .node-start {
   background-color: rgb(49, 156, 63);
+  cursor: pointer;
 }
 
 .gridContainer div {

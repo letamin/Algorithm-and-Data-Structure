@@ -59,6 +59,7 @@ function setContainer(event) {
     }
 }
 
+//Node object for the Algorithm
 function createNode(col, row) {
     return {
         col,
@@ -71,7 +72,7 @@ function createNode(col, row) {
     }
 }
 
-//Create the grid of nodes for the algorithm. The grid will be: grid[row][col]
+//Create the grid of nodes for the algorithm. The grid will be: grid[row][col] with default 20 rows and 50 cols
 function getInitialGrid(algorithm) {
     const grid = [];
     var gridContainer = document.createElement('div');
@@ -106,15 +107,19 @@ function getInitialGrid(algorithm) {
         visualizeButton.innerHTML = `Visualize Dijkstra's algorithm`;
         gridContainer.appendChild(visualizeButton);
         addRestartButton(gridContainer);
-        dragNode();
+        dragNodes();
         visualizeButtonEventListener(grid, visualizeButton);
     }
 }
 
-function dragNode() {
+//Allow to drag the Start and Finish nodes to new locations
+function dragNodes() {
     var nodeStart = document.getElementsByClassName('node-start')[0];
+    var nodeFinish = document.getElementsByClassName('node-finish')[0];
     nodeStart.setAttribute("draggable", "true");
     nodeStart.setAttribute("ondragstart", "drag(event)");
+    nodeFinish.setAttribute("draggable", "true");
+    nodeFinish.setAttribute("ondragstart", "drag(event)");
 }
 
 function allowDrop(node) {
@@ -123,21 +128,33 @@ function allowDrop(node) {
 
 function drop(node) {
     node.preventDefault();
-    var data = node.dataTransfer.getData('class');
     var src = node.dataTransfer.getData('src');
     var srcNode = document.getElementById(`${src}`);
 
-    srcNode.classList.remove('node-start');
-    node.target.classList.add(data);
-    srcNode.removeAttribute("draggable");
-    srcNode.removeAttribute("ondragstart");
+    /*  There are 3 cases with dragging the nodes:
+            1. The start node and finish node are at the same place => remove the start node first => becomes 3rd case
+            2. The finish node alone => remove the node-finish class and add this class to the drop's target => new finish node
+            3. The start node alone => remove the node-start class and add this class to the drop's target => new start node */
+    if (srcNode.classList.contains('node-start') && srcNode.classList.contains('node-finish')) {
+        srcNode.classList.remove('node-start');
+        node.target.classList.add('node-start');
+    } else if (srcNode.classList.contains('node-finish')) {
+        srcNode.classList.remove('node-finish');
+        node.target.classList.add('node-finish');
+        srcNode.removeAttribute("draggable");
+        srcNode.removeAttribute("ondragstart");
+    } else if (srcNode.classList.contains('node-start')) {
+        srcNode.classList.remove('node-start');
+        node.target.classList.add('node-start');
+        srcNode.removeAttribute("draggable");
+        srcNode.removeAttribute("ondragstart");
+    }
+
     node.target.setAttribute("draggable", "true");
     node.target.setAttribute("ondragstart", "drag(event)");
 }
 
 function drag(node) {
-    console.log(node.target)
-    node.dataTransfer.setData('class', 'node-start');
     node.dataTransfer.setData('src', node.target.id);
 }
 
@@ -171,26 +188,42 @@ function addRestartButton(gridContainer) {
 function visualizeButtonEventListener(grid, visualizeButton) {
     //Visualize Button
     visualizeButton.addEventListener('click', () => {
-        dragNode();
-        var getNodeStart = document.getElementsByClassName('node-start')[0];
-        var nodeStartCoorinate = getNodeStart.id.slice(5).split('-')
-        START_NODE_COL = nodeStartCoorinate[1];
-        START_NODE_ROW = nodeStartCoorinate[0];
-
-        var startNode = grid[START_NODE_ROW][START_NODE_COL];
-        var finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-        grid[START_NODE_ROW][START_NODE_COL].isStart = true;
-
+        const startNode = getStartNodes(grid);
+        const finishNode = getFinishNode(grid);
         const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
         const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-
         animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
     });
     //Restart Button
     const restartButton = document.querySelector('.restart-btn');
     restartButton.addEventListener('click', () => {
         restartButtonEventListener(getAllNodes(grid));
+        dragNodes();
     })
+}
+
+function getStartNodes(grid) {
+    var getNodeStart = document.getElementsByClassName('node-start')[0];
+    var nodeStartCoorinate = getNodeStart.id.slice(5).split('-');
+    START_NODE_COL = nodeStartCoorinate[1];
+    START_NODE_ROW = nodeStartCoorinate[0];
+    var startNode = grid[START_NODE_ROW][START_NODE_COL];
+    grid[START_NODE_ROW][START_NODE_COL].isStart = true;
+    getNodeStart.removeAttribute("draggable");
+    getNodeStart.removeAttribute("ondragstart");
+    return startNode;
+}
+
+function getFinishNode(grid) {
+    var getNodeFinish = document.getElementsByClassName('node-finish')[0];
+    var nodeFinishCoorinate = getNodeFinish.id.slice(5).split('-');
+    FINISH_NODE_COL = nodeFinishCoorinate[1];
+    FINISH_NODE_ROW = nodeFinishCoorinate[0];
+    var finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    grid[FINISH_NODE_ROW][FINISH_NODE_COL].isFinish = true;
+    getNodeFinish.removeAttribute("draggable");
+    getNodeFinish.removeAttribute("ondragstart");
+    return finishNode;
 }
 
 //Animation for Dijkstra's algorithm -  visited nodes in order
