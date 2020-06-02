@@ -14,7 +14,7 @@
 
 :root {
   --img: url();
-  --height: 15vh;
+  --height: auto;
 }
 
 /********************************* Navbar *********************************/
@@ -36,7 +36,7 @@
 .brand {
   color: white;
   font-size: 2rem;
-  padding-left: 3em;
+  padding-left: 2.5em;
   font-weight: bold;
 }
 
@@ -139,7 +139,7 @@
 /********************************* 3 main containers (table of contents, illstration and code) *********************************/
 .main-container {
   display: flex;
-  height: 85vh;
+  height: 88vh;
   width: 100vw;
 }
 
@@ -413,7 +413,7 @@
 }
 
 tr th,
-tr td {
+.table-row td {
   height: auto;
   width: auto;
   padding: 15px;
@@ -424,6 +424,7 @@ tr td {
 
 table {
   border-collapse: collapse;
+  border-spacing: 0;
 }
 
 .complexityTable {
@@ -616,7 +617,7 @@ table {
 
   .burger {
     position: absolute;
-    top: calc(var(--height) / 2);
+    top: 5%;
     left: 20px;
     display: block;
   }
@@ -624,7 +625,7 @@ table {
   .table-contents-container {
     position: absolute;
     left: 0;
-    height: 85vh;
+    height: 88vh;
     width: 20vw;
     transform: translateX(-100%);
     transition: transform 0.5s ease;
@@ -771,7 +772,7 @@ table {
 
 @media only screen and (max-width: 1024px) and (orientation: landscape) {
   .dropdown {
-    height: 22vh;
+    height: auto;
   }
 
   .operation li {
@@ -944,6 +945,37 @@ table {
   }
 }
 
+@keyframes nodeStart {
+  0% {
+    transform: scale(0.6);
+    background-color: rgb(49, 156, 63);
+  }
+
+  50% {
+    transform: scale(1.2);
+    background-color: rgb(49, 156, 63);
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: rgb(49, 156, 63);
+  }
+}
+
+@keyframes nodeFinish {
+  0% {
+    transform: scale(0.6);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
 @keyframes visitedAnimation {
   0% {
     transform: scale(0.3);
@@ -963,6 +995,24 @@ table {
   100% {
     transform: scale(1);
     background-color: rgba(0, 190, 218, 0.75);
+  }
+}
+
+@keyframes wall {
+  0% {
+    transform: scale(0.6);
+    background-color: rgba(0, 0, 66, 0.75);
+    border-radius: 100%;
+  }
+
+  50% {
+    transform: scale(1.2);
+    background-color: rgba(0, 0, 66, 0.75);
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: rgba(0, 0, 66, 0.75);
   }
 }
 
@@ -1010,7 +1060,7 @@ table {
 .node {
   width: 25px;
   height: 25px;
-  outline: 1px solid rgb(122, 197, 255);
+  outline: 1px solid rgb(175, 216, 248);
   display: inline-block;
 }
 
@@ -1022,10 +1072,6 @@ table {
 .node-start {
   background-color: rgb(49, 156, 63);
   cursor: pointer;
-}
-
-.gridContainer div {
-  font-size: 0px;
 }
 
 .gridContainer {
@@ -1040,22 +1086,40 @@ table {
   animation-name: shortestPath;
   animation-duration: 1.5s;
   animation-timing-function: ease-out;
-  animation-delay: 0;
-  animation-direction: alternate;
-  animation-iteration-count: 1;
   animation-fill-mode: forwards;
-  animation-play-state: running;
+  animation-direction: alternate;
 }
 
 .node-visited {
   animation-name: visitedAnimation;
   animation-duration: 1.5s;
   animation-timing-function: ease-out;
-  animation-delay: 0;
-  animation-direction: alternate;
-  animation-iteration-count: 1;
   animation-fill-mode: forwards;
-  animation-play-state: running;
+  animation-direction: alternate;
+}
+
+.node-start-animation {
+  animation-name: nodeStart;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+  animation-direction: alternate;
+  animation-fill-mode: forwards;
+}
+
+.node-finish-animation {
+  animation-name: nodeFinish;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+  animation-direction: alternate;
+  animation-fill-mode: forwards;
+}
+
+.wall {
+  animation-name: wall;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+  animation-direction: alternate;
 }
 
 /******Test zone*******/

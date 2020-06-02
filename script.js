@@ -31,10 +31,12 @@ const dataStructureObject = [
 ];
 
 //This is the defaul values for the Algorithm and maybe changed later
-var START_NODE_ROW = 9;
-var START_NODE_COL = 15;
-var FINISH_NODE_ROW = 9;
-var FINISH_NODE_COL = 38;
+var START_NODE_ROW = 1;
+var START_NODE_COL = 1;
+var FINISH_NODE_ROW = 3;
+var FINISH_NODE_COL = 3;
+var isRunning = false;
+var isReset = false;
 
 initialize();
 
@@ -68,47 +70,71 @@ function createNode(col, row) {
         isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
         distance: Infinity,
         isVisited: false,
-        previousNode: null
+        previousNode: null,
+        isWall: false
     }
 }
 
 //Create the grid of nodes for the algorithm. The grid will be: grid[row][col] with default 20 rows and 50 cols
 function getInitialGrid(algorithm) {
     const grid = [];
-    var gridContainer = document.createElement('div');
-
+    var table = document.createElement('table');
+    table.classList.add('board');
+    var gridContainer = document.createElement('tbody');
     gridContainer.classList.add('gridContainer');
-    for (let row = 0; row < 20; row++) {
+
+    for (let row = 0; row < 5; row++) {
         const currentRow = [];
-        var rowDiv = document.createElement('div');
+        var tableRow = document.createElement('tr');
+        tableRow.setAttribute("id", `row-${row}`);
         for (let col = 0; col < 50; col++) {
             var currentNode = createNode(col, row);
             currentRow.push(createNode(col, row));
-            var node = document.createElement('div');
+            var node = document.createElement('td');
             node.setAttribute("id", `node-${row}-${col}`);
             if (currentNode.col == START_NODE_COL && currentNode.row == START_NODE_ROW) {
                 node.classList.add('node-start');
+                node.isStart = true;
             } else if (currentNode.col == FINISH_NODE_COL && currentNode.row == FINISH_NODE_ROW) {
                 node.classList.add('node-finish');
+                node.isFinish = true;
             }
             node.setAttribute("ondragover", "allowDrop(event)");
             node.setAttribute("ondrop", "drop(event)");
             node.classList.add('node');
-            rowDiv.appendChild(node);
+            tableRow.appendChild(node);
         }
-        gridContainer.appendChild(rowDiv);
+        gridContainer.appendChild(tableRow);
         grid.push(currentRow);
     }
-    illustrationContainer.appendChild(gridContainer);
+    table.appendChild(gridContainer)
+    illustrationContainer.appendChild(table);
 
     if (algorithm == 'Dijkstra') {
         var visualizeButton = document.createElement('button');
+        var nodesArray = getAllNodes(grid);
         visualizeButton.classList.add('btn', 'btn-slide');
         visualizeButton.innerHTML = `Visualize Dijkstra's algorithm`;
         gridContainer.appendChild(visualizeButton);
         addRestartButton(gridContainer);
+        getNodesForWalls(nodesArray);
         dragNodes();
         visualizeButtonEventListener(grid, visualizeButton);
+    }
+}
+
+function getNodesForWalls(nodesArray) {
+    nodesArray.forEach(node => {
+        var nodeElement = document.getElementById(`node-${node.row}-${node.col}`);
+        nodeElement.addEventListener('click', () => {
+            createWall(nodeElement, node);
+        })
+    })
+}
+function createWall(nodeElement, node) {
+    if (!nodeElement.classList.contains('node-start') && !nodeElement.classList.contains('node-finish') && !isRunning && isReset) {
+        nodeElement.classList.toggle('wall');
+        node.isWall = !node.isWall;
     }
 }
 
@@ -130,20 +156,19 @@ function drop(node) {
     node.preventDefault();
     var src = node.dataTransfer.getData('src');
     var srcNode = document.getElementById(`${src}`);
-
     /*  There are 3 cases with dragging the nodes:
             1. The start node and finish node are at the same place => remove the start node first => becomes 3rd case
             2. The finish node alone => remove the node-finish class and add this class to the drop's target => new finish node
             3. The start node alone => remove the node-start class and add this class to the drop's target => new start node */
-    if (srcNode.classList.contains('node-start') && srcNode.classList.contains('node-finish')) {
+    if (srcNode.classList.contains('node-start') && srcNode.classList.contains('node-finish') && !node.target.classList.contains('wall')) {
         srcNode.classList.remove('node-start');
         node.target.classList.add('node-start');
-    } else if (srcNode.classList.contains('node-finish')) {
+    } else if (srcNode.classList.contains('node-finish') && !node.target.classList.contains('wall')) {
         srcNode.classList.remove('node-finish');
         node.target.classList.add('node-finish');
         srcNode.removeAttribute("draggable");
         srcNode.removeAttribute("ondragstart");
-    } else if (srcNode.classList.contains('node-start')) {
+    } else if (srcNode.classList.contains('node-start') && !node.target.classList.contains('wall')) {
         srcNode.classList.remove('node-start');
         node.target.classList.add('node-start');
         srcNode.removeAttribute("draggable");
@@ -160,12 +185,17 @@ function drag(node) {
 
 //Restart the grid to the begining state
 function restartButtonEventListener(arrayNodes) {
+    isRunning = false;
+    isReset = true;
     for (let i = 0; i < arrayNodes.length; i++) {
         setTimeout(() => {
             const node = arrayNodes[i];
             const visitedNode = document.getElementById(`node-${node.row}-${node.col}`);
+            visitedNode.classList.remove('wall');
             visitedNode.classList.remove('node-visited');
             visitedNode.classList.remove('node-shortest-path');
+            visitedNode.classList.remove('node-start-animation');
+            visitedNode.classList.remove('node-finish-animation');
         }, 2 * i);
     }
 
@@ -173,6 +203,9 @@ function restartButtonEventListener(arrayNodes) {
         node.distance = Infinity;
         node.previousNode = null;
         node.isVisited = false;
+        node.isWall = false;
+        node.isFinish = false;
+        node.isStart = false;
     })
 }
 
@@ -180,7 +213,7 @@ function restartButtonEventListener(arrayNodes) {
 function addRestartButton(gridContainer) {
     var restartButton = document.createElement('button');
     restartButton.classList.add('btn', 'btn-slide', 'restart-btn');
-    restartButton.innerHTML = `Restart`;
+    restartButton.innerHTML = `Clear Board`;
     gridContainer.appendChild(restartButton);
 }
 
@@ -188,17 +221,22 @@ function addRestartButton(gridContainer) {
 function visualizeButtonEventListener(grid, visualizeButton) {
     //Visualize Button
     visualizeButton.addEventListener('click', () => {
-        const startNode = getStartNodes(grid);
-        const finishNode = getFinishNode(grid);
-        const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
-        const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-        animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+        if (!isRunning) {
+            isRunning = true;
+            const startNode = getStartNodes(grid);
+            const finishNode = getFinishNode(grid);
+            const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
+            const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+            animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+        }
     });
     //Restart Button
     const restartButton = document.querySelector('.restart-btn');
     restartButton.addEventListener('click', () => {
-        restartButtonEventListener(getAllNodes(grid));
-        dragNodes();
+        if (!isRunning) {
+            restartButtonEventListener(getAllNodes(grid));
+            dragNodes();
+        }
     })
 }
 
@@ -238,7 +276,7 @@ function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
         setTimeout(() => {
             const node = visitedNodesInOrder[i];
             const visitedNode = document.getElementById(`node-${node.row}-${node.col}`);
-            visitedNode.classList.add('node-visited')
+            visitedNode.classList.add('node-visited');
         }, 10 * i);
     }
 }
@@ -250,7 +288,14 @@ function animateShortestPath(nodesInShortestPathOrder) {
             const node = nodesInShortestPathOrder[i];
             const shortestPathdNode = document.getElementById(`node-${node.row}-${node.col}`);
             shortestPathdNode.classList.remove('node-visited');
-            shortestPathdNode.classList.add('node-shortest-path')
+            shortestPathdNode.classList.add('node-shortest-path');
+            if (i == 0) {
+                shortestPathdNode.classList.add('node-start-animation');
+            }
+            if (i == nodesInShortestPathOrder.length - 1) {
+                shortestPathdNode.classList.add('node-finish-animation');
+                isRunning = false;
+            }
         }, 50 * i);
     }
 }
@@ -268,6 +313,8 @@ function dijkstra(grid, startNode, finishNode) {
         sortNodesByDistance(unvisitedNodes);
         const closestNode = unvisitedNodes.shift();
         closestNode.isVisited = true;
+        if (closestNode.isWall) continue;
+        if (closestNode.distance == Infinity) return visitedNodesInOrder;
         visitedNodesInOrder.push(closestNode);
         if (closestNode === finishNode) return visitedNodesInOrder;
         updateUnvisitedNeighbors(closestNode, grid);
@@ -541,7 +588,7 @@ function displayOperation(dataObject, dataOperationArray) {
                         var complexityTable = document.createElement('table');
                         complexityTable.innerHTML =
                             `<thead>
-                            <tr>
+                            <tr class="table-row">
                                 <th scope="col">Access</th>
                                 <th scope="col">Insert</th>
                                 <th scope="col">Search</th>
@@ -549,7 +596,7 @@ function displayOperation(dataObject, dataOperationArray) {
                             </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr class="table-row">
                                     <td>O(n)</td>
                                     <td>O(1)</td>
                                     <td>O(n)</td>
@@ -706,7 +753,7 @@ function displayOperation(dataObject, dataOperationArray) {
                         var complexityTable = document.createElement('table');
                         complexityTable.innerHTML =
                             `<thead>
-                                <tr>
+                                <tr class="table-row">
                                     <th scope="col">Enqueue</th>
                                     <th scope="col">Dequeue</th>
                                     <th scope="col">Peek</th>
@@ -714,7 +761,7 @@ function displayOperation(dataObject, dataOperationArray) {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr class="table-row">
                                     <td>O(1)</td>
                                     <td>O(1)</td>
                                     <td>O(1)</td>
@@ -856,7 +903,7 @@ function displayOperation(dataObject, dataOperationArray) {
                         var complexityTable = document.createElement('table');
                         complexityTable.innerHTML =
                             `<thead>
-                                <tr>
+                                <tr class="table-row">
                                     <th scope="col">Push</th>
                                     <th scope="col">Pop</th>
                                     <th scope="col">Peek</th>
@@ -864,7 +911,7 @@ function displayOperation(dataObject, dataOperationArray) {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr class="table-row">
                                     <td>O(1)</td>
                                     <td>O(1)</td>
                                     <td>O(1)</td>
@@ -914,14 +961,14 @@ function displayOperation(dataObject, dataOperationArray) {
                         var complexityTable = document.createElement('table');
                         complexityTable.innerHTML =
                             `<thead>
-                                <tr>
+                                <tr class="table-row">
                                     <th scope="col">Insert</th>
                                     <th scope="col">Delete</th>
                                     <th scope="col">Find</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr class="table-row">
                                     <td>O(1)</td>
                                     <td>O(1)</td>
                                     <td>O(1)</td>
