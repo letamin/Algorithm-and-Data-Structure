@@ -31,12 +31,12 @@ const dataStructureObject = [
 ];
 
 //This is the defaul values for the Algorithm and maybe changed later
-var START_NODE_ROW = 1;
-var START_NODE_COL = 1;
+var START_NODE_ROW = 0;
+var START_NODE_COL = 49;
 var FINISH_NODE_ROW = 3;
 var FINISH_NODE_COL = 3;
 var isRunning = false;
-var isReset = false;
+var isReset = true;
 
 initialize();
 
@@ -79,11 +79,14 @@ function createNode(col, row) {
 function getInitialGrid(algorithm) {
     const grid = [];
     var table = document.createElement('table');
-    table.classList.add('board');
     var gridContainer = document.createElement('tbody');
+    var buttonContainer = document.createElement('div');
+    var boardContainer = document.createElement('div');
     gridContainer.classList.add('gridContainer');
+    boardContainer.classList.add('boardContainer');
+    buttonContainer.classList.add('button-container');
 
-    for (let row = 0; row < 5; row++) {
+    for (let row = 0; row < 20; row++) {
         const currentRow = [];
         var tableRow = document.createElement('tr');
         tableRow.setAttribute("id", `row-${row}`);
@@ -107,22 +110,22 @@ function getInitialGrid(algorithm) {
         gridContainer.appendChild(tableRow);
         grid.push(currentRow);
     }
-    table.appendChild(gridContainer)
-    illustrationContainer.appendChild(table);
+    table.appendChild(gridContainer);
+    boardContainer.appendChild(table);
+    boardContainer.appendChild(buttonContainer)
+    illustrationContainer.appendChild(boardContainer);
 
     if (algorithm == 'Dijkstra') {
-        var visualizeButton = document.createElement('button');
-        var nodesArray = getAllNodes(grid);
-        visualizeButton.classList.add('btn', 'btn-slide');
-        visualizeButton.innerHTML = `Visualize Dijkstra's algorithm`;
-        gridContainer.appendChild(visualizeButton);
-        addRestartButton(gridContainer);
+        const nodesArray = getAllNodes(grid);
+        const visualizeButton = addVisualizeButton(buttonContainer);
+        addRestartButton(buttonContainer);
         getNodesForWalls(nodesArray);
         dragNodes();
         visualizeButtonEventListener(grid, visualizeButton);
     }
 }
 
+//Get all the nodes for adding the walls
 function getNodesForWalls(nodesArray) {
     nodesArray.forEach(node => {
         var nodeElement = document.getElementById(`node-${node.row}-${node.col}`);
@@ -131,6 +134,8 @@ function getNodesForWalls(nodesArray) {
         })
     })
 }
+
+//Create wall function
 function createWall(nodeElement, node) {
     if (!nodeElement.classList.contains('node-start') && !nodeElement.classList.contains('node-finish') && !isRunning && isReset) {
         nodeElement.classList.toggle('wall');
@@ -185,17 +190,20 @@ function drag(node) {
 
 //Restart the grid to the begining state
 function restartButtonEventListener(arrayNodes) {
-    isRunning = false;
-    isReset = true;
     for (let i = 0; i < arrayNodes.length; i++) {
         setTimeout(() => {
             const node = arrayNodes[i];
             const visitedNode = document.getElementById(`node-${node.row}-${node.col}`);
             visitedNode.classList.remove('wall');
             visitedNode.classList.remove('node-visited');
+            visitedNode.classList.remove('scale-animation');
             visitedNode.classList.remove('node-shortest-path');
             visitedNode.classList.remove('node-start-animation');
             visitedNode.classList.remove('node-finish-animation');
+            if (i == (arrayNodes.length - 1)) {
+                isRunning = false;
+                isReset = true;
+            }
         }, 2 * i);
     }
 
@@ -210,11 +218,20 @@ function restartButtonEventListener(arrayNodes) {
 }
 
 //Add the Restart button to screen
-function addRestartButton(gridContainer) {
+function addRestartButton(buttonContainer) {
     var restartButton = document.createElement('button');
     restartButton.classList.add('btn', 'btn-slide', 'restart-btn');
     restartButton.innerHTML = `Clear Board`;
-    gridContainer.appendChild(restartButton);
+    buttonContainer.appendChild(restartButton);
+}
+
+//Add Visualize button for the Algorithm
+function addVisualizeButton(buttonContainer) {
+    var visualizeButton = document.createElement('button');
+    visualizeButton.classList.add('btn', 'btn-slide');
+    visualizeButton.innerHTML = `Visualize Dijkstra's algorithm`;
+    buttonContainer.appendChild(visualizeButton);
+    return visualizeButton;
 }
 
 //Dijkstra's algorithm Visualize button
@@ -222,6 +239,7 @@ function visualizeButtonEventListener(grid, visualizeButton) {
     //Visualize Button
     visualizeButton.addEventListener('click', () => {
         if (!isRunning) {
+            isReset = false;
             isRunning = true;
             const startNode = getStartNodes(grid);
             const finishNode = getFinishNode(grid);
@@ -277,6 +295,10 @@ function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
             const node = visitedNodesInOrder[i];
             const visitedNode = document.getElementById(`node-${node.row}-${node.col}`);
             visitedNode.classList.add('node-visited');
+            if (i == visitedNodesInOrder.length - 1) {
+                visitedNode.classList.remove('node-visited');
+                visitedNode.classList.add('node-finish-animation');
+            }
         }, 10 * i);
     }
 }
@@ -293,7 +315,7 @@ function animateShortestPath(nodesInShortestPathOrder) {
                 shortestPathdNode.classList.add('node-start-animation');
             }
             if (i == nodesInShortestPathOrder.length - 1) {
-                shortestPathdNode.classList.add('node-finish-animation');
+                shortestPathdNode.classList.add('scale-animation');
                 isRunning = false;
             }
         }, 50 * i);
@@ -1057,7 +1079,7 @@ function hashTableIllustration(operation) {
 
     if (operation == 'Collisions' || operation == 'Insert') {
         hashTableCommonAnimation();
-        hashTableInsertAndIllustrationAnimation();
+        hashTableInsertAndCollisionIllustrationAnimation();
     } else if (operation == 'Delete') {
         hashTableCommonAnimation();
         hashTableDeleteAnimation();
@@ -1099,7 +1121,7 @@ function hashTableDeleteAnimation() {
 }
 
 //Hash Table Insert and Collisions animation
-function hashTableInsertAndIllustrationAnimation() {
+function hashTableInsertAndCollisionIllustrationAnimation() {
     var hashKeyInserted = Array.from(document.querySelectorAll('.hash-key-inserted'));
     hashKeyInserted.forEach((key, index) => {
         key.style.animation = `appear 0.5s forwards ${index + 2}s`
