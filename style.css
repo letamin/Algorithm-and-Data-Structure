@@ -38,6 +38,7 @@
   font-size: 2rem;
   padding-left: 2.5em;
   font-weight: bold;
+  pointer-events: none;
 }
 
 .button-nav:hover {
@@ -954,37 +955,6 @@ table {
   }
 }
 
-@keyframes nodeStart {
-  0% {
-    transform: scale(0.6);
-    background-color: rgb(49, 156, 63);
-  }
-
-  50% {
-    transform: scale(1.2);
-    background-color: rgb(49, 156, 63);
-  }
-
-  100% {
-    transform: scale(1);
-    background-color: rgb(49, 156, 63);
-  }
-}
-
-@keyframes nodeFinish {
-  0% {
-    transform: scale(0.6);
-  }
-
-  50% {
-    transform: scale(1.2);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
 @keyframes visitedAnimation {
   0% {
     transform: scale(0.3);
@@ -1025,15 +995,19 @@ table {
   }
 }
 
-@keyframes scale {
+@keyframes weight {
   0% {
-    transform: scale(0.3);
+    transform: scale(0.6);
   }
+
   50% {
     transform: scale(1.2);
+    border-radius: 50%;
   }
+
   100% {
     transform: scale(1);
+    border-radius: 100%;
   }
 }
 
@@ -1087,21 +1061,27 @@ table {
 }
 
 .node-finish {
-  background-color: rgb(156, 48, 48);
+  background: url(image/flag.png);
+  background-size: contain;
+  background-repeat: no-repeat;
   cursor: pointer;
+}
+
+.node-finish.node-shortest-path,
+.weight.node-shortest-path,
+.node-start.node-shortest-path {
+  background-color: rgb(255, 254, 106);
+}
+
+.weight.node-visited {
+  background-color: rgba(0, 190, 218, 0.75);
 }
 
 .node-start {
-  background-color: rgb(49, 156, 63);
+  background: url(image/circle.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
   cursor: pointer;
-}
-
-.gridContainer {
-  text-align: center;
-}
-
-.gridContainer button {
-  margin: 10px;
 }
 
 .node-shortest-path {
@@ -1111,16 +1091,6 @@ table {
 
 .node-visited {
   animation: visitedAnimation 1.5s ease-out forwards;
-  animation-direction: alternate;
-}
-
-.node-start-animation {
-  animation: nodeStart 1.5s ease-out forwards;
-  animation-direction: alternate;
-}
-
-.node-finish-animation {
-  animation: nodeFinish 1.5s ease-out forwards;
   animation-direction: alternate;
 }
 
@@ -1148,8 +1118,17 @@ table {
   margin: 20px;
 }
 
-.scale-animation {
-  animation: scale 1s ease-out;
+.weight {
+  animation: weight 0.5s ease-out forwards;
+  animation-direction: alternate;
+  background: url(image/weight.svg);
+  background-repeat: no-repeat;
+  background-color: white;
+  background-size: contain;
+}
+
+.boardContainer {
+  text-align: center;
 }
 
 /******Test zone*******/

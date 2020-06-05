@@ -32,9 +32,9 @@ const dataStructureObject = [
 
 //This is the defaul values for the Algorithm and maybe changed later
 var START_NODE_ROW = 0;
-var START_NODE_COL = 49;
-var FINISH_NODE_ROW = 3;
-var FINISH_NODE_COL = 3;
+var START_NODE_COL = 0;
+var FINISH_NODE_ROW = 5;
+var FINISH_NODE_COL = 5;
 var isRunning = false;
 var isReset = true;
 
@@ -71,7 +71,8 @@ function createNode(col, row) {
         distance: Infinity,
         isVisited: false,
         previousNode: null,
-        isWall: false
+        isWall: false,
+        isWeighted: false
     }
 }
 
@@ -82,6 +83,7 @@ function getInitialGrid(algorithm) {
     var gridContainer = document.createElement('tbody');
     var buttonContainer = document.createElement('div');
     var boardContainer = document.createElement('div');
+    var introText = document.createElement('h4');
     gridContainer.classList.add('gridContainer');
     boardContainer.classList.add('boardContainer');
     buttonContainer.classList.add('button-container');
@@ -111,6 +113,7 @@ function getInitialGrid(algorithm) {
         grid.push(currentRow);
     }
     table.appendChild(gridContainer);
+    boardContainer.appendChild(introText);
     boardContainer.appendChild(table);
     boardContainer.appendChild(buttonContainer)
     illustrationContainer.appendChild(boardContainer);
@@ -119,9 +122,38 @@ function getInitialGrid(algorithm) {
         const nodesArray = getAllNodes(grid);
         const visualizeButton = addVisualizeButton(buttonContainer);
         addRestartButton(buttonContainer);
+        addRandomWallButton(buttonContainer);
+        addIntroText(introText, algorithm);
+        addRandomWeightButton(buttonContainer);
+        getNodesForWalls(nodesArray);
+        getNodesForWeight(nodesArray);
+        dragNodes();
+        randomWallCreate(grid);
+        randomWeightCreate(grid);
+        restartButton(grid);
+        visualizeButtonEventListener(grid, visualizeButton);
+    } else if (algorithm == 'Breadth-first search') {
+        const nodesArray = getAllNodes(grid);
+        const visualizeButton = addVisualizeButton(buttonContainer);
+        addRestartButton(buttonContainer);
+        addRandomWallButton(buttonContainer);
+        addIntroText(introText, algorithm);
         getNodesForWalls(nodesArray);
         dragNodes();
+        randomWallCreate(grid);
+        restartButton(grid);
         visualizeButtonEventListener(grid, visualizeButton);
+    }
+}
+
+function addIntroText(introText, algorithm) {
+    switch (algorithm) {
+        case 'Dijkstra':
+            introText.innerHTML = `Dijkstra's algorithm is weighted and guarantees the shortest path`;
+            break;
+        case 'Breadth-first search':
+            introText.innerHTML = `Breadth-first search is unweighted and guarantees the shortest path`;
+            break;
     }
 }
 
@@ -135,11 +167,38 @@ function getNodesForWalls(nodesArray) {
     })
 }
 
-//Create wall function
+//Create wall function with left click
 function createWall(nodeElement, node) {
-    if (!nodeElement.classList.contains('node-start') && !nodeElement.classList.contains('node-finish') && !isRunning && isReset) {
+    if (!nodeElement.classList.contains('node-start')
+        && !nodeElement.classList.contains('node-finish')
+        && !nodeElement.classList.contains('weight')
+        && !isRunning && isReset) {
         nodeElement.classList.toggle('wall');
         node.isWall = !node.isWall;
+    }
+}
+
+//Get all the nodes for adding the weights
+function getNodesForWeight(nodesArray) {
+    nodesArray.forEach(node => {
+        var nodeElement = document.getElementById(`node-${node.row}-${node.col}`);
+        nodeElement.addEventListener('contextmenu', () => {
+            createWeight(nodeElement, node, event);
+        })
+    })
+}
+
+//Add weight function with right click
+function createWeight(nodeElement, node, event) {
+    event.preventDefault();
+    if (event.button == 2) {
+        if (!nodeElement.classList.contains('node-start')
+            && !nodeElement.classList.contains('node-finish')
+            && !nodeElement.classList.contains('wall')
+            && !isRunning && isReset) {
+            nodeElement.classList.toggle('weight');
+            node.isWeighted = !node.isWeighted;
+        }
     }
 }
 
@@ -161,19 +220,20 @@ function drop(node) {
     node.preventDefault();
     var src = node.dataTransfer.getData('src');
     var srcNode = document.getElementById(`${src}`);
-    /*  There are 3 cases with dragging the nodes:
-            1. The start node and finish node are at the same place => remove the start node first => becomes 3rd case
-            2. The finish node alone => remove the node-finish class and add this class to the drop's target => new finish node
-            3. The start node alone => remove the node-start class and add this class to the drop's target => new start node */
-    if (srcNode.classList.contains('node-start') && srcNode.classList.contains('node-finish') && !node.target.classList.contains('wall')) {
-        srcNode.classList.remove('node-start');
-        node.target.classList.add('node-start');
-    } else if (srcNode.classList.contains('node-finish') && !node.target.classList.contains('wall')) {
+
+    //Cannot drop on a wall or weight node, also cannot drop on start node if dragging finish node and vice versa 
+    if (srcNode.classList.contains('node-finish')
+        && !node.target.classList.contains('wall')
+        && !node.target.classList.contains('node-start')
+        && !node.target.classList.contains('weight')) {
         srcNode.classList.remove('node-finish');
         node.target.classList.add('node-finish');
         srcNode.removeAttribute("draggable");
         srcNode.removeAttribute("ondragstart");
-    } else if (srcNode.classList.contains('node-start') && !node.target.classList.contains('wall')) {
+    } else if (srcNode.classList.contains('node-start')
+        && !node.target.classList.contains('wall')
+        && !node.target.classList.contains('node-finish')
+        && !node.target.classList.contains('weight')) {
         srcNode.classList.remove('node-start');
         node.target.classList.add('node-start');
         srcNode.removeAttribute("draggable");
@@ -195,8 +255,8 @@ function restartButtonEventListener(arrayNodes) {
             const node = arrayNodes[i];
             const visitedNode = document.getElementById(`node-${node.row}-${node.col}`);
             visitedNode.classList.remove('wall');
+            visitedNode.classList.remove('weight');
             visitedNode.classList.remove('node-visited');
-            visitedNode.classList.remove('scale-animation');
             visitedNode.classList.remove('node-shortest-path');
             visitedNode.classList.remove('node-start-animation');
             visitedNode.classList.remove('node-finish-animation');
@@ -208,12 +268,13 @@ function restartButtonEventListener(arrayNodes) {
     }
 
     arrayNodes.forEach(node => {
-        node.distance = Infinity;
-        node.previousNode = null;
-        node.isVisited = false;
         node.isWall = false;
-        node.isFinish = false;
         node.isStart = false;
+        node.isFinish = false;
+        node.isVisited = false;
+        node.isWeighted = false;
+        node.previousNode = null;
+        node.distance = Infinity;
     })
 }
 
@@ -223,6 +284,22 @@ function addRestartButton(buttonContainer) {
     restartButton.classList.add('btn', 'btn-slide', 'restart-btn');
     restartButton.innerHTML = `Clear Board`;
     buttonContainer.appendChild(restartButton);
+}
+
+//Add Random button to creating walls
+function addRandomWallButton(buttonContainer) {
+    var randomWallButton = document.createElement('button');
+    randomWallButton.classList.add('btn', 'btn-slide', 'random-btn-wall');
+    randomWallButton.innerHTML = `Random Wall`;
+    buttonContainer.appendChild(randomWallButton);
+}
+
+//Add Random button to adding weight
+function addRandomWeightButton(buttonContainer) {
+    var randomWeightButton = document.createElement('button');
+    randomWeightButton.classList.add('btn', 'btn-slide', 'random-btn-weight');
+    randomWeightButton.innerHTML = `Random Weight`;
+    buttonContainer.appendChild(randomWeightButton);
 }
 
 //Add Visualize button for the Algorithm
@@ -248,7 +325,11 @@ function visualizeButtonEventListener(grid, visualizeButton) {
             animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
         }
     });
-    //Restart Button
+
+}
+
+//Restart button
+function restartButton(grid) {
     const restartButton = document.querySelector('.restart-btn');
     restartButton.addEventListener('click', () => {
         if (!isRunning) {
@@ -258,6 +339,70 @@ function visualizeButtonEventListener(grid, visualizeButton) {
     })
 }
 
+function randomWallCreate(grid) {
+    const randomWallsButton = document.querySelector('.random-btn-wall');
+    randomWallsButton.addEventListener('click', () => {
+        createRandomWallsAndWeight(event, grid);
+    })
+}
+
+function randomWeightCreate(grid) {
+    const randomWeightButton = document.querySelector('.random-btn-weight');
+    randomWeightButton.addEventListener('click', () => {
+        createRandomWallsAndWeight(event, grid);
+    })
+}
+
+//Create random walls and weight based on the button clicked. There will be a total of 200 walls/weight
+function createRandomWallsAndWeight(event, grid) {
+    if (event.target.classList.contains('random-btn-wall')) {
+        var target = 'wall';
+    } else {
+        var target = 'weight';
+    }
+    if (!isRunning && isReset) {
+        var nodesArray = getAllNodes(grid);
+        var totalNumberofWalls = 200;
+        while (totalNumberofWalls > 0) {
+            random = randomNumber(nodesArray.length);
+            if (random / 50 == 0) {
+                var row = (random / 50) - 1;
+                var col = 49;
+                if (row < 0) {
+                    row = 0;
+                }
+            } else {
+                var row = Math.floor(random / 50);
+                var col = random % 50;
+                if (row < 0) {
+                    row = 0;
+                    col = random - 1;
+                }
+            }
+            var node = document.getElementById(`node-${row}-${col}`);
+            if (!node.classList.contains('node-start')
+                && !node.classList.contains('node-finish')
+                && !node.classList.contains('weight')
+                && !node.classList.contains('wall')) {
+                if (target == 'wall') {
+                    node.classList.add(`${target}`);
+                    grid[row][col].isWall = true;
+                } else if (target == 'weight') {
+                    node.classList.add(`${target}`);
+                    grid[row][col].isWeighted = true;
+                }
+            }
+            totalNumberofWalls--;
+        }
+    }
+}
+
+//Random function for auto generating walls
+function randomNumber(length) {
+    return Math.floor(Math.random() * length);
+}
+
+//Get the start node after dragging
 function getStartNodes(grid) {
     var getNodeStart = document.getElementsByClassName('node-start')[0];
     var nodeStartCoorinate = getNodeStart.id.slice(5).split('-');
@@ -270,6 +415,7 @@ function getStartNodes(grid) {
     return startNode;
 }
 
+//Get the finish node after dragging
 function getFinishNode(grid) {
     var getNodeFinish = document.getElementsByClassName('node-finish')[0];
     var nodeFinishCoorinate = getNodeFinish.id.slice(5).split('-');
@@ -284,7 +430,7 @@ function getFinishNode(grid) {
 
 //Animation for Dijkstra's algorithm -  visited nodes in order
 function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
-    for (let i = 1; i <= visitedNodesInOrder.length; i++) {
+    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
         if (i === visitedNodesInOrder.length) {
             setTimeout(() => {
                 animateShortestPath(nodesInShortestPathOrder);
@@ -295,27 +441,24 @@ function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
             const node = visitedNodesInOrder[i];
             const visitedNode = document.getElementById(`node-${node.row}-${node.col}`);
             visitedNode.classList.add('node-visited');
-            if (i == visitedNodesInOrder.length - 1) {
-                visitedNode.classList.remove('node-visited');
-                visitedNode.classList.add('node-finish-animation');
-            }
         }, 10 * i);
     }
 }
 
 //Animation for Dijkstra's algorithm -  shortest path
 function animateShortestPath(nodesInShortestPathOrder) {
+    //Return if the length = 1. This means there is no path to the finish node
+    if (nodesInShortestPathOrder.length == 1) {
+        isRunning = false;
+        return;
+    }
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
         setTimeout(() => {
             const node = nodesInShortestPathOrder[i];
             const shortestPathdNode = document.getElementById(`node-${node.row}-${node.col}`);
             shortestPathdNode.classList.remove('node-visited');
             shortestPathdNode.classList.add('node-shortest-path');
-            if (i == 0) {
-                shortestPathdNode.classList.add('node-start-animation');
-            }
             if (i == nodesInShortestPathOrder.length - 1) {
-                shortestPathdNode.classList.add('scale-animation');
                 isRunning = false;
             }
         }, 50 * i);
@@ -335,7 +478,12 @@ function dijkstra(grid, startNode, finishNode) {
         sortNodesByDistance(unvisitedNodes);
         const closestNode = unvisitedNodes.shift();
         closestNode.isVisited = true;
+        //if (closestNode.previousNode == null && closestNode.distance != 0) return visitedNodesInOrder;
         if (closestNode.isWall) continue;
+        if (closestNode === finishNode && closestNode.previousNode == null) {
+            closestNode.isVisited = false;
+            return visitedNodesInOrder;
+        }
         if (closestNode.distance == Infinity) return visitedNodesInOrder;
         visitedNodesInOrder.push(closestNode);
         if (closestNode === finishNode) return visitedNodesInOrder;
@@ -347,8 +495,20 @@ function dijkstra(grid, startNode, finishNode) {
 function updateUnvisitedNeighbors(node, grid) {
     const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
     for (const neighbor of unvisitedNeighbors) {
-        neighbor.distance = node.distance + 1;
-        neighbor.previousNode = node;
+        if (neighbor.isWeighted) {
+            if (neighbor.distance != Infinity) {
+                if (node.distance + 10 < neighbor.distance) {
+                    neighbor.distance = neighbor.distance - 10 + node.distance;
+                    neighbor.previousNode = node;
+                }
+            } else if (neighbor.distance == Infinity) {
+                neighbor.distance = node.distance + 10;
+                neighbor.previousNode = node;
+            }
+        } else {
+            neighbor.distance = node.distance + 1;
+            neighbor.previousNode = node;
+        }
     }
 }
 
@@ -364,7 +524,13 @@ function getUnvisitedNeighbors(node, grid) {
 }
 
 function sortNodesByDistance(unvisitedNodes) {
-    unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
+    unvisitedNodes.sort(customsort);
+}
+
+//Sort the nodes base on distance, if distances are the same then the finish nodes have higher priority
+function customsort(nodeA, nodeB) {
+    if (nodeA.distance != nodeB.distance) return nodeA.distance - nodeB.distance;
+    else if (nodeA.distance == nodeB.distance) return nodeB.isFinish - nodeA.isFinish;
 }
 
 //Get all the nodes into one single array
