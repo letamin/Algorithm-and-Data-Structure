@@ -33,8 +33,8 @@ const dataStructureObject = [
 //This is the defaul values for the Algorithm and maybe changed later
 var START_NODE_ROW = 0;
 var START_NODE_COL = 0;
-var FINISH_NODE_ROW = 5;
-var FINISH_NODE_COL = 5;
+var FINISH_NODE_ROW = 3;
+var FINISH_NODE_COL = 3;
 var isRunning = false;
 var isReset = true;
 
@@ -72,7 +72,10 @@ function createNode(col, row) {
         isVisited: false,
         previousNode: null,
         isWall: false,
-        isWeighted: false
+        isWeighted: false,
+        heuristics: 0,            //This is for A* alrogithm: f(n) = g(n) + h(n) with f = combinedHeuristics, g = distance from the start node, h = heuristics
+        combinedHeuristics: 0,
+        neighbors: []             //All the neighbors for the current node
     }
 }
 
@@ -120,7 +123,7 @@ function getInitialGrid(algorithm) {
 
     if (algorithm == 'Dijkstra') {
         const nodesArray = getAllNodes(grid);
-        const visualizeButton = addVisualizeButton(buttonContainer);
+        const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
         addRestartButton(buttonContainer);
         addRandomWallButton(buttonContainer);
         addIntroText(introText, algorithm);
@@ -131,10 +134,10 @@ function getInitialGrid(algorithm) {
         randomWallCreate(grid);
         randomWeightCreate(grid);
         restartButton(grid);
-        visualizeButtonEventListener(grid, visualizeButton);
+        visualizeButtonDijkstra(grid, visualizeButton);
     } else if (algorithm == 'Breadth-first search') {
         const nodesArray = getAllNodes(grid);
-        const visualizeButton = addVisualizeButton(buttonContainer);
+        const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
         addRestartButton(buttonContainer);
         addRandomWallButton(buttonContainer);
         addIntroText(introText, algorithm);
@@ -142,7 +145,21 @@ function getInitialGrid(algorithm) {
         dragNodes();
         randomWallCreate(grid);
         restartButton(grid);
-        visualizeButtonEventListener(grid, visualizeButton);
+        visualizeButtonDijkstra(grid, visualizeButton);
+    } else if (algorithm == 'A*') {
+        const nodesArray = getAllNodes(grid);
+        const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
+        addIntroText(introText, algorithm);
+        addRestartButton(buttonContainer);
+        addRandomWallButton(buttonContainer);
+        addRandomWeightButton(buttonContainer);
+        getNodesForWalls(nodesArray);
+        getNodesForWeight(nodesArray);
+        dragNodes();
+        randomWallCreate(grid);
+        randomWeightCreate(grid);
+        restartButton(grid);
+        visualizeButtonAstart(grid, visualizeButton);
     }
 }
 
@@ -153,6 +170,9 @@ function addIntroText(introText, algorithm) {
             break;
         case 'Breadth-first search':
             introText.innerHTML = `Breadth-first search is unweighted and guarantees the shortest path`;
+            break;
+        case 'A*':
+            introText.innerHTML = `A* is weighted and guarantees the shortest path`;
             break;
     }
 }
@@ -275,6 +295,9 @@ function restartButtonEventListener(arrayNodes) {
         node.isWeighted = false;
         node.previousNode = null;
         node.distance = Infinity;
+        node.heuristics = 0;
+        node.combinedHeuristics = 0;
+        node.neighbor = []
     })
 }
 
@@ -303,16 +326,30 @@ function addRandomWeightButton(buttonContainer) {
 }
 
 //Add Visualize button for the Algorithm
-function addVisualizeButton(buttonContainer) {
+function addVisualizeButton(buttonContainer, algorithm) {
     var visualizeButton = document.createElement('button');
     visualizeButton.classList.add('btn', 'btn-slide');
-    visualizeButton.innerHTML = `Visualize Dijkstra's algorithm`;
+    visualizeButton.innerHTML = `Visualize ${algorithm} algorithm`;
     buttonContainer.appendChild(visualizeButton);
     return visualizeButton;
 }
 
+function visualizeButtonAstart(grid, visualizeButton) {
+    visualizeButton.addEventListener('click', () => {
+        if (!isRunning) {
+            isReset = false;
+            isRunning = true;
+            const startNode = getStartNodes(grid);
+            const finishNode = getFinishNode(grid);
+            const visitedNodesInOrder = Astart(grid, startNode, finishNode);
+            const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+            animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+        }
+    })
+}
+
 //Dijkstra's algorithm Visualize button
-function visualizeButtonEventListener(grid, visualizeButton) {
+function visualizeButtonDijkstra(grid, visualizeButton) {
     //Visualize Button
     visualizeButton.addEventListener('click', () => {
         if (!isRunning) {
@@ -325,7 +362,6 @@ function visualizeButtonEventListener(grid, visualizeButton) {
             animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
         }
     });
-
 }
 
 //Restart button
@@ -465,6 +501,87 @@ function animateShortestPath(nodesInShortestPathOrder) {
     }
 }
 
+/* A* algorithm:
+    There are 2 sets, closeSet for the already finished nodes and openSet for the nodes that are not yet finished and is valuating.
+    Start at the startNode with distance = 0, we loop through the openSet to find the nodes that have the closet distance to the finishNode 
+        using the formula f(n) = g(n) + h(n) where g(n) is the closet distance from the startNode to that node and h(n) is the node's heuristics value.
+    Then remove the closetNode from the openSet and evaluate the neighbors of the closetNode to calculate 
+        the distance from the startNode to the neighbors node (update the distance if it is closer than the current distance)
+*/
+function Astart(grid, startNode, finishNode) {
+    var openSet = [] //array of nodes to evaluate
+    var closeSet = [] //array of finished nodes
+    openSet.push(startNode);
+    startNode.distance = 0;
+
+    getAllNeighbors(grid);
+    while (!!openSet.length) {
+        var closestNode = 0;
+        for (var i = 0; i < openSet.length; i++) {
+            if (openSet[i].combinedHeuristics < openSet[closestNode].combinedHeuristics) {
+                closestNode = i;
+            }
+        }
+        var currentNode = openSet[closestNode];
+        closeSet.push(currentNode);
+        if (currentNode == finishNode) return closeSet;
+        removeNodeFromArray(openSet, currentNode);
+        var neighbors = currentNode.neighbors;
+        for (var i = 0; i < neighbors.length; i++) {
+            var neighbor = neighbors[i];
+            if (!closeSet.includes(neighbor) && !neighbor.isWall) {
+                var tempDistance = 0;
+                var newPath = false;
+                if (!neighbor.isWeighted) {
+                    tempDistance = currentNode.distance + 1;
+                } else if (neighbor.isWeighted) {
+                    tempDistance = currentNode.distance + 10;
+                }
+
+                if (openSet.includes(neighbor)) {
+                    if (tempDistance < neighbor.distance) {
+                        neighbor.distance = tempDistance;
+                        newPath = true;
+                    }
+                } else {
+                    neighbor.distance = tempDistance;
+                    openSet.push(neighbor);
+                    newPath = true;
+                }
+
+                if (newPath) {
+                    neighbor.heuristics = getHeuristics(neighbor, finishNode);
+                    neighbor.combinedHeuristics = neighbor.distance + neighbor.heuristics;
+                    neighbor.previousNode = currentNode;
+                }
+            }
+        }
+    }
+    return closeSet;
+}
+
+function getAllNeighbors(grid) {
+    for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid[0].length; j++) {
+            addNeighbors(grid[i][j], grid);
+        }
+    }
+}
+
+//Get the Heuristics for the nodes using the Manhattan distance
+function getHeuristics(nodeA, nodeB) {
+    var heuristics = Math.abs(nodeA.row - nodeB.row) + Math.abs(nodeA.col - nodeB.col);
+    return heuristics;
+}
+
+function removeNodeFromArray(array, node) {
+    for (var i = array.length - 1; i >= 0; i--) {
+        if (array[i] == node) {
+            array.splice(i, 1);
+        }
+    }
+}
+
 /* Dijkstra's algorithm:
     Start at the START_NODE with its distance = 0. 
     Sort the unvisitedNodes array based on distance to get closet nodes - the first time it will be the START_NODE (distance = 0) 
@@ -487,12 +604,12 @@ function dijkstra(grid, startNode, finishNode) {
         if (closestNode.distance == Infinity) return visitedNodesInOrder;
         visitedNodesInOrder.push(closestNode);
         if (closestNode === finishNode) return visitedNodesInOrder;
-        updateUnvisitedNeighbors(closestNode, grid);
+        updateDistanceUnvisitedNeighbors(closestNode, grid);
     }
 }
 
 //Update the distance of the unvisited nodes (closet node's distance + 1) and set its previous node = closet node
-function updateUnvisitedNeighbors(node, grid) {
+function updateDistanceUnvisitedNeighbors(node, grid) {
     const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
     for (const neighbor of unvisitedNeighbors) {
         if (neighbor.isWeighted) {
@@ -521,6 +638,15 @@ function getUnvisitedNeighbors(node, grid) {
     if (col > 0) neighbors.push(grid[row][col - 1]);
     if (col < grid[0].length - 1) neighbors.push(grid[row][col + 1]);
     return neighbors.filter(neighbor => !neighbor.isVisited);
+}
+
+//Get ALL the neighbor nodes (up, down, left, and right nodes)
+function addNeighbors(node, grid) {
+    const { col, row } = node;
+    if (row > 0) node.neighbors.push(grid[row - 1][col]);
+    if (row < grid.length - 1) node.neighbors.push(grid[row + 1][col]);
+    if (col > 0) node.neighbors.push(grid[row][col - 1]);
+    if (col < grid[0].length - 1) node.neighbors.push(grid[row][col + 1]);
 }
 
 function sortNodesByDistance(unvisitedNodes) {
