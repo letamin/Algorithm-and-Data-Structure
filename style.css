@@ -618,7 +618,7 @@ table {
 
   .burger {
     position: absolute;
-    top: calc(var(--height) / 2 - 10px);
+    top: calc(var(--height) / 2 - 5px);
     left: 20px;
     display: block;
   }
@@ -657,6 +657,12 @@ table {
 
   .hash-function {
     background-color: white;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .burger {
+    top: calc(var(--height) / 2 - 18px);
   }
 }
 
@@ -1043,7 +1049,6 @@ table {
 }
 
 .btn {
-  background-color: #e3e3e3;
   color: #222;
   border: none;
   outline: none;
@@ -1116,6 +1121,10 @@ table {
   display: flex;
   justify-content: space-around;
   margin: 20px;
+}
+
+.button-container li {
+  list-style: none;
 }
 
 .weight {

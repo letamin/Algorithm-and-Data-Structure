@@ -55,7 +55,8 @@ function setContainer(event) {
         getInitialGrid(event.target.innerHTML);
     } else {
         codeContainer.classList.add('hide');
-        tableContentContainer.classList.add('hide');
+        tableContentContainer.classList.add('background-color');
+        tableContentContainer.style.setProperty('flex', '0.2');
         clearScreen();
         getInitialGrid(event.target.innerHTML);
     }
@@ -84,12 +85,12 @@ function getInitialGrid(algorithm) {
     const grid = [];
     var table = document.createElement('table');
     var gridContainer = document.createElement('tbody');
-    var buttonContainer = document.createElement('div');
+    var buttonContainer = document.createElement('ul');
     var boardContainer = document.createElement('div');
     var introText = document.createElement('h4');
     gridContainer.classList.add('gridContainer');
     boardContainer.classList.add('boardContainer');
-    buttonContainer.classList.add('button-container');
+    buttonContainer.classList.add('operation');
 
     for (let row = 0; row < 20; row++) {
         const currentRow = [];
@@ -317,31 +318,34 @@ function restartButtonEventListener(arrayNodes) {
 
 //Add the Restart button to screen
 function addRestartButton(buttonContainer) {
-    var restartButton = document.createElement('button');
+    var restartButton = document.createElement('li');
     restartButton.classList.add('btn', 'btn-slide', 'restart-btn');
     restartButton.innerHTML = `Clear Board`;
     buttonContainer.appendChild(restartButton);
+    tableContentContainer.appendChild(buttonContainer)
 }
 
 //Add Random button to creating walls
 function addRandomWallButton(buttonContainer) {
-    var randomWallButton = document.createElement('button');
+    var randomWallButton = document.createElement('li');
     randomWallButton.classList.add('btn', 'btn-slide', 'random-btn-wall');
     randomWallButton.innerHTML = `Random Wall`;
     buttonContainer.appendChild(randomWallButton);
+    tableContentContainer.appendChild(buttonContainer)
 }
 
 //Add Random button to adding weight
 function addRandomWeightButton(buttonContainer) {
-    var randomWeightButton = document.createElement('button');
+    var randomWeightButton = document.createElement('li');
     randomWeightButton.classList.add('btn', 'btn-slide', 'random-btn-weight');
     randomWeightButton.innerHTML = `Random Weight`;
     buttonContainer.appendChild(randomWeightButton);
+    tableContentContainer.appendChild(buttonContainer)
 }
 
 //Add Visualize button for the Algorithm
 function addVisualizeButton(buttonContainer, algorithm) {
-    var visualizeButton = document.createElement('button');
+    var visualizeButton = document.createElement('li');
     visualizeButton.classList.add('btn', 'btn-slide');
     visualizeButton.innerHTML = `Visualize ${algorithm} algorithm`;
     buttonContainer.appendChild(visualizeButton);
@@ -350,12 +354,14 @@ function addVisualizeButton(buttonContainer, algorithm) {
 
 function visualizeButtonDFS(grid, visualizeButton) {
     visualizeButton.addEventListener('click', () => {
+        tableContentContainer.classList.remove('burger-active');
         if (!isRunning) {
             isReset = false;
             isRunning = true;
             const startNode = getStartNodes(grid);
             const finishNode = getFinishNode(grid);
             const visitedNodesInOrder = depthFirstSearch(grid, startNode, finishNode);
+            console.log(visitedNodesInOrder)
             const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
             animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
         }
@@ -364,6 +370,7 @@ function visualizeButtonDFS(grid, visualizeButton) {
 
 function visualizeButtonAstart(grid, visualizeButton) {
     visualizeButton.addEventListener('click', () => {
+        tableContentContainer.classList.remove('burger-active');
         if (!isRunning) {
             isReset = false;
             isRunning = true;
@@ -380,6 +387,7 @@ function visualizeButtonAstart(grid, visualizeButton) {
 function visualizeButtonDijkstra(grid, visualizeButton) {
     //Visualize Button
     visualizeButton.addEventListener('click', () => {
+        tableContentContainer.classList.remove('burger-active');
         if (!isRunning) {
             isReset = false;
             isRunning = true;
@@ -396,6 +404,7 @@ function visualizeButtonDijkstra(grid, visualizeButton) {
 function restartButton(grid) {
     const restartButton = document.querySelector('.restart-btn');
     restartButton.addEventListener('click', () => {
+        tableContentContainer.classList.remove('burger-active');
         if (!isRunning) {
             restartButtonEventListener(getAllNodes(grid));
             dragNodes();
@@ -406,6 +415,7 @@ function restartButton(grid) {
 function randomWallCreate(grid) {
     const randomWallsButton = document.querySelector('.random-btn-wall');
     randomWallsButton.addEventListener('click', () => {
+        tableContentContainer.classList.remove('burger-active');
         createRandomWallsAndWeight(event, grid);
     })
 }
@@ -413,6 +423,7 @@ function randomWallCreate(grid) {
 function randomWeightCreate(grid) {
     const randomWeightButton = document.querySelector('.random-btn-weight');
     randomWeightButton.addEventListener('click', () => {
+        tableContentContainer.classList.remove('burger-active');
         createRandomWallsAndWeight(event, grid);
     })
 }
@@ -626,15 +637,6 @@ function updateDistanceNeighbors(closeSet, openSet, currentNode, finishNode) {
     }
 }
 
-//Get all the neighbors of the nodes
-function getAllNeighbors(grid) {
-    for (let i = 0; i < grid.length; i++) {
-        for (let j = 0; j < grid[0].length; j++) {
-            addNeighbors(grid[i][j], grid);
-        }
-    }
-}
-
 //Get the Heuristics for the nodes using the Manhattan distance
 function getHeuristics(nodeA, nodeB) {
     var heuristics = Math.abs(nodeA.row - nodeB.row) + Math.abs(nodeA.col - nodeB.col);
@@ -660,6 +662,7 @@ function dijkstra(grid, startNode, finishNode) {
     const visitedNodesInOrder = [];
     startNode.distance = 0;
     const unvisitedNodes = getAllNodes(grid);
+    getAllNeighbors(grid);
     while (!!unvisitedNodes.length) {
         sortNodesByDistance(unvisitedNodes);
         const closestNode = unvisitedNodes.shift();
@@ -672,13 +675,13 @@ function dijkstra(grid, startNode, finishNode) {
         if (closestNode.distance == Infinity) return visitedNodesInOrder;
         visitedNodesInOrder.push(closestNode);
         if (closestNode === finishNode) return visitedNodesInOrder;
-        updateDistanceUnvisitedNeighbors(closestNode, grid);
+        updateDistanceUnvisitedNeighbors(closestNode);
     }
 }
 
 //Update the distance of the unvisited nodes (closet node's distance + 1) and set its previous node = closet node
-function updateDistanceUnvisitedNeighbors(node, grid) {
-    const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
+function updateDistanceUnvisitedNeighbors(node) {
+    const unvisitedNeighbors = node.neighbors.filter(neighbor => !neighbor.isVisited);
     for (const neighbor of unvisitedNeighbors) {
         if (neighbor.isWeighted) {
             if (neighbor.distance != Infinity) {
@@ -697,15 +700,13 @@ function updateDistanceUnvisitedNeighbors(node, grid) {
     }
 }
 
-//Get the unvisited neighbor nodes (up, down, left, and right nodes)
-function getUnvisitedNeighbors(node, grid) {
-    const neighbors = [];
-    const { col, row } = node;
-    if (row > 0) neighbors.push(grid[row - 1][col]);
-    if (row < grid.length - 1) neighbors.push(grid[row + 1][col]);
-    if (col > 0) neighbors.push(grid[row][col - 1]);
-    if (col < grid[0].length - 1) neighbors.push(grid[row][col + 1]);
-    return neighbors.filter(neighbor => !neighbor.isVisited);
+//Get all the neighbors of the nodes
+function getAllNeighbors(grid) {
+    for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid[0].length; j++) {
+            addNeighbors(grid[i][j], grid);
+        }
+    }
 }
 
 //Get ALL the neighbor nodes (up, down, left, and right nodes)
@@ -751,9 +752,8 @@ function getNodesInShortestPathOrder(finishNode) {
 /***************************************************************************************************************/
 //Get the Data Strucuture name
 function getName(event) {
-    if (codeContainer.classList.contains('hide') && tableContentContainer.classList.contains('hide')) {
+    if (codeContainer.classList.contains('hide')) {
         codeContainer.classList.remove('hide');
-        tableContentContainer.classList.remove('hide');
         const foundDataStructure = dataStructureObject.find((obj) => obj.name === event.target.innerHTML);
         getInformation(foundDataStructure);
         tableContentContainer.classList.add('background-color');
