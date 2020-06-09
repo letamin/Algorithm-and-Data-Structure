@@ -43,7 +43,7 @@ function initialize() {
     burgerActive();
     dataStructureArray.forEach((data) => {
         data.addEventListener('click', getName);
-    });
+    })
     algorithmArray.forEach(algorithm => {
         algorithm.addEventListener('click', setContainer);
     })
@@ -51,12 +51,13 @@ function initialize() {
 
 function setContainer(event) {
     if (codeContainer.classList.contains('hide')) {
+        clearScreen();
         getInitialGrid(event.target.innerHTML);
     } else {
+        clearScreen();
         codeContainer.classList.add('hide');
         tableContentContainer.classList.add('background-color');
         tableContentContainer.style.setProperty('flex', '0.2');
-        clearScreen();
         getInitialGrid(event.target.innerHTML);
     }
 }
@@ -118,19 +119,21 @@ function getInitialGrid(algorithm) {
     table.appendChild(gridContainer);
     boardContainer.appendChild(introText);
     boardContainer.appendChild(table);
-    boardContainer.appendChild(buttonContainer)
     illustrationContainer.appendChild(boardContainer);
+    const guide = addGuide();
+    boardContainer.appendChild(guide);
+    displayBurgerButton();
 
     if (algorithm == 'Dijkstra') {
         const nodesArray = getAllNodes(grid);
         const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
+        dragNodes();
+        addIntroText(introText, algorithm);
         addRestartButton(buttonContainer);
         addRandomWallButton(buttonContainer);
-        addIntroText(introText, algorithm);
         addRandomWeightButton(buttonContainer);
         getNodesForWalls(nodesArray);
         getNodesForWeight(nodesArray);
-        dragNodes();
         randomWallCreate(grid);
         randomWeightCreate(grid);
         restartButton(grid);
@@ -138,24 +141,24 @@ function getInitialGrid(algorithm) {
     } else if (algorithm == 'Breadth-first search') {  //BFS is just Dijkstra's algorithm with all edges weight = 1, but for this visualizer, all 1 => no differences
         const nodesArray = getAllNodes(grid);
         const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
+        dragNodes();
         addRestartButton(buttonContainer);
         addRandomWallButton(buttonContainer);
         addIntroText(introText, algorithm);
         getNodesForWalls(nodesArray);
-        dragNodes();
         randomWallCreate(grid);
         restartButton(grid);
         visualizeButtonDijkstra(grid, visualizeButton);
     } else if (algorithm == 'A*') {
         const nodesArray = getAllNodes(grid);
         const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
+        dragNodes();
         addIntroText(introText, algorithm);
         addRestartButton(buttonContainer);
         addRandomWallButton(buttonContainer);
         addRandomWeightButton(buttonContainer);
         getNodesForWalls(nodesArray);
         getNodesForWeight(nodesArray);
-        dragNodes();
         randomWallCreate(grid);
         randomWeightCreate(grid);
         restartButton(grid);
@@ -163,15 +166,41 @@ function getInitialGrid(algorithm) {
     } else if (algorithm == 'Depth-first search') {
         const nodesArray = getAllNodes(grid);
         const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
+        dragNodes();
         addRestartButton(buttonContainer);
         addRandomWallButton(buttonContainer);
         addIntroText(introText, algorithm);
         getNodesForWalls(nodesArray);
-        dragNodes();
         randomWallCreate(grid);
         restartButton(grid);
         visualizeButtonDFS(grid, visualizeButton);
     }
+}
+
+function addGuide() {
+    var guide = document.createElement('ul');
+    guide.classList.add('guide');
+    guide.innerHTML =
+        `<li>
+            <div class="start-guide"></div><span class="guide-text">Start Node</span>
+        </li>
+        <li>
+            <div class="finish-guide"></div><span class="guide-text">Finish Node</span>
+        </li>
+        <li>
+            <div class="wall-guide"></div><span class="guide-text">Wall Node</span>
+
+        </li>
+        <li>
+            <div class="weight-guide"></div><span class="guide-text">Weight Node</span>
+        </li>
+        <li>
+            <div class="shortest-guide"></div><span class="guide-text">Shortest Path Node</span>
+        </li>
+        <li>
+            <div class="visited-guide"></div><span class="guide-text">Visited Node</span>
+        </li>`
+    return guide;
 }
 
 //Set the introduction text for the selected algorithms
@@ -322,7 +351,7 @@ function addRestartButton(buttonContainer) {
     restartButton.classList.add('btn', 'btn-slide', 'restart-btn');
     restartButton.innerHTML = `Clear Board`;
     buttonContainer.appendChild(restartButton);
-    tableContentContainer.appendChild(buttonContainer)
+    tableContentContainer.appendChild(buttonContainer);
 }
 
 //Add Random button to creating walls
@@ -331,7 +360,7 @@ function addRandomWallButton(buttonContainer) {
     randomWallButton.classList.add('btn', 'btn-slide', 'random-btn-wall');
     randomWallButton.innerHTML = `Random Wall`;
     buttonContainer.appendChild(randomWallButton);
-    tableContentContainer.appendChild(buttonContainer)
+    tableContentContainer.appendChild(buttonContainer);
 }
 
 //Add Random button to adding weight
@@ -340,7 +369,7 @@ function addRandomWeightButton(buttonContainer) {
     randomWeightButton.classList.add('btn', 'btn-slide', 'random-btn-weight');
     randomWeightButton.innerHTML = `Random Weight`;
     buttonContainer.appendChild(randomWeightButton);
-    tableContentContainer.appendChild(buttonContainer)
+    tableContentContainer.appendChild(buttonContainer);
 }
 
 //Add Visualize button for the Algorithm
@@ -349,6 +378,7 @@ function addVisualizeButton(buttonContainer, algorithm) {
     visualizeButton.classList.add('btn', 'btn-slide');
     visualizeButton.innerHTML = `Visualize ${algorithm}`;
     buttonContainer.appendChild(visualizeButton);
+    tableContentContainer.appendChild(buttonContainer);
     return visualizeButton;
 }
 
@@ -756,7 +786,7 @@ function getNodesInShortestPathOrder(finishNode) {
 function getName(event) {
     if (codeContainer.classList.contains('hide')) {
         codeContainer.classList.remove('hide');
-        const foundDataStructure = dataStructureObject.find((obj) => obj.name === event.target.innerHTML);
+        const foundDataStructure = dataStructureObject.find((obj) => obj.name == event.target.innerHTML);
         getInformation(foundDataStructure);
         tableContentContainer.classList.add('background-color');
     } else {
@@ -769,6 +799,7 @@ function getName(event) {
 //Display the table of contens for the selected data object
 function getInformation(dataObject) {
     clearScreen();
+    displayBurgerButton();
     displayTitleTableContainer(dataObject);
     displayTableContent(dataObject);
 }
@@ -793,7 +824,7 @@ function displayTitleTableContainer(dataObject) {
 function displayTableContent(dataObject) {
     var dataOperationArray = [];
     var dataOperationUL = document.createElement('ul');
-    dataObject.operation.forEach((_dataObject, index) => {
+    dataObject.operation.forEach((_data, index) => {
         dataOperationArray[index] = document.createElement('li');
         dataOperationArray[index].innerHTML = dataObject.operation[index];
         dataOperationUL.appendChild(dataOperationArray[index]);
@@ -1689,6 +1720,10 @@ function displayIntro(dataObject) {
             codeContainer.appendChild(textIntro);
             break;
     }
+}
+
+function displayBurgerButton() {
+    burgerButton.style.setProperty('display', 'flex');
 }
 
 //Display the Intro text and illustration of the selected data object

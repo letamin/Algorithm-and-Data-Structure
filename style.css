@@ -70,7 +70,7 @@
   cursor: pointer;
   overflow: hidden;
   top: 50px;
-  z-index: 2;
+  z-index: 3;
 }
 
 .algorithm-dropdown li,
@@ -82,12 +82,12 @@
   align-items: center;
 }
 
-.algorithm-dropdown li:hover,
-.datastructure-dropdown li:hover {
-  /*Something strange is happening here....*/
+/*Something strange is happening here....*/
+.algorithm:hover,
+.data-structure:hover {
   background-color: #326fa8;
   color: white;
-  transition: all 0.5s ease;
+  transition: 0.1s ease;
   transform: scale(1.2);
 }
 
@@ -107,7 +107,6 @@
 .datastructure-dropdown button:focus + ul {
   visibility: visible;
   transform: translateY(10px);
-  transition: all 0.5s ease;
 }
 
 .down {
@@ -581,6 +580,10 @@ table {
   font-weight: bold;
 }
 
+td {
+  padding: 8px;
+}
+
 /********************************* On other screen *********************************/
 @media only screen and (min-width: 1600px) {
   .cell.null::before,
@@ -618,7 +621,6 @@ table {
 
   .burger {
     position: absolute;
-    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -664,6 +666,20 @@ table {
 }
 
 @media only screen and (max-width: 768px) {
+  .start-guide,
+  .finish-guide,
+  .visited-guide,
+  .shortest-guide,
+  .wall-guide,
+  .weight-guide {
+    height: 15px !important;
+    width: 15px !important;
+  }
+
+  .guide-text {
+    font-size: 0.6em;
+  }
+
   .brand {
     font-size: 1.2em;
     padding-left: 5em;
@@ -731,11 +747,6 @@ table {
 
   .nav-content-container {
     margin-right: 0;
-  }
-
-  tr th,
-  tr td {
-    padding: 8px;
   }
 
   .flex-container-col {
@@ -1062,7 +1073,7 @@ li.btn {
   font-size: 1em;
 }
 
-/********************************* Dijkstra's algorithm *********************************/
+/********************************* Algorithm *********************************/
 .node {
   width: 25px;
   height: 25px;
@@ -1122,16 +1133,6 @@ li.btn {
   display: table-cell;
 }
 
-.button-container {
-  display: flex;
-  justify-content: space-around;
-  margin: 20px;
-}
-
-.button-container li {
-  list-style: none;
-}
-
 .weight {
   animation: weight 0.5s ease-out forwards;
   animation-direction: alternate;
@@ -1143,6 +1144,86 @@ li.btn {
 
 .boardContainer {
   text-align: center;
+}
+
+.guide {
+  display: flex;
+  margin: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.guide li {
+  list-style: none;
+}
+
+.start-guide {
+  margin: 0 0.42em;
+  top: 0.35em;
+  display: inline-block;
+  height: 25px;
+  width: 25px;
+  background: url(image/circle.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+}
+
+.finish-guide {
+  margin: 0 0.42em;
+  top: 0.35em;
+  display: inline-block;
+  height: 25px;
+  width: 25px;
+  background: url(image/flag.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+}
+
+.weight-guide {
+  margin: 0 0.42em;
+  top: 0.35em;
+  display: inline-block;
+  height: 25px;
+  width: 25px;
+  background: url(image/weight.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+}
+
+.wall-guide {
+  margin: 0 0.42em;
+  top: 0.35em;
+  display: inline-block;
+  height: 25px;
+  width: 25px;
+  background-color: rgba(0, 0, 66, 0.75);
+  position: relative;
+}
+
+.shortest-guide {
+  margin: 0 0.42em;
+  top: 0.35em;
+  display: inline-block;
+  height: 25px;
+  width: 25px;
+  background-color: rgb(255, 254, 106);
+  position: relative;
+}
+
+.visited-guide {
+  margin: 0 0.42em;
+  top: 0.35em;
+  display: inline-block;
+  height: 25px;
+  width: 25px;
+  background-color: rgba(0, 190, 218, 0.75);
+  position: relative;
 }
 
 /******Test zone*******/
