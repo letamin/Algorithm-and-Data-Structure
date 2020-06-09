@@ -133,7 +133,7 @@
   width: 25px;
   height: 2px;
   background-color: rgb(226, 226, 226);
-  margin: 5px;
+  margin: 3px;
   transition: all 0.3s ease;
 }
 
@@ -187,7 +187,7 @@
 .operation li {
   color: white;
   text-align: center;
-  font-size: 1.5em;
+  font-size: 1.2em;
   margin-top: 20px;
   width: 100%;
   list-style: none;
@@ -618,9 +618,12 @@ table {
 
   .burger {
     position: absolute;
-    top: calc(var(--height) / 2 - 5px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: var(--height);
     left: 20px;
-    display: block;
   }
 
   .table-contents-container {
@@ -657,12 +660,6 @@ table {
 
   .hash-function {
     background-color: white;
-  }
-}
-
-@media only screen and (min-width: 768px) {
-  .burger {
-    top: calc(var(--height) / 2 - 18px);
   }
 }
 
@@ -788,11 +785,15 @@ table {
 
 @media only screen and (max-width: 1024px) and (orientation: landscape) {
   .dropdown {
-    height: auto;
+    height: 20vh;
+  }
+
+  .burger {
+    height: 20vh;
   }
 
   .operation li {
-    font-size: 1.2em;
+    font-size: 1em;
   }
 
   .table-contents-container {
@@ -1055,6 +1056,10 @@ table {
   position: relative;
   cursor: pointer;
   padding: 0.5em 1em;
+}
+
+li.btn {
+  font-size: 1em;
 }
 
 /********************************* Dijkstra's algorithm *********************************/

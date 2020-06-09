@@ -39,7 +39,6 @@ var isRunning = false;
 var isReset = true;
 
 initialize();
-
 function initialize() {
     burgerActive();
     dataStructureArray.forEach((data) => {
@@ -51,7 +50,7 @@ function initialize() {
 }
 
 function setContainer(event) {
-    if (!mainContainer.contains(codeContainer) && !mainContainer.contains(tableContentContainer)) {
+    if (codeContainer.classList.contains('hide')) {
         getInitialGrid(event.target.innerHTML);
     } else {
         codeContainer.classList.add('hide');
@@ -136,7 +135,7 @@ function getInitialGrid(algorithm) {
         randomWeightCreate(grid);
         restartButton(grid);
         visualizeButtonDijkstra(grid, visualizeButton);
-    } else if (algorithm == 'Breadth-first search') {
+    } else if (algorithm == 'Breadth-first search') {  //BFS is just Dijkstra's algorithm with all edges weight = 1, but for this visualizer, all 1 => no differences
         const nodesArray = getAllNodes(grid);
         const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
         addRestartButton(buttonContainer);
@@ -175,6 +174,7 @@ function getInitialGrid(algorithm) {
     }
 }
 
+//Set the introduction text for the selected algorithms
 function addIntroText(introText, algorithm) {
     switch (algorithm) {
         case 'Dijkstra':
@@ -347,11 +347,12 @@ function addRandomWeightButton(buttonContainer) {
 function addVisualizeButton(buttonContainer, algorithm) {
     var visualizeButton = document.createElement('li');
     visualizeButton.classList.add('btn', 'btn-slide');
-    visualizeButton.innerHTML = `Visualize ${algorithm} algorithm`;
+    visualizeButton.innerHTML = `Visualize ${algorithm}`;
     buttonContainer.appendChild(visualizeButton);
     return visualizeButton;
 }
 
+//Depth-first search algorithm visualize button 
 function visualizeButtonDFS(grid, visualizeButton) {
     visualizeButton.addEventListener('click', () => {
         tableContentContainer.classList.remove('burger-active');
@@ -363,11 +364,12 @@ function visualizeButtonDFS(grid, visualizeButton) {
             const visitedNodesInOrder = depthFirstSearch(grid, startNode, finishNode);
             console.log(visitedNodesInOrder)
             const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-            animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+            animatePath(visitedNodesInOrder, nodesInShortestPathOrder);
         }
     })
 }
 
+//A* algorithm visualize button
 function visualizeButtonAstart(grid, visualizeButton) {
     visualizeButton.addEventListener('click', () => {
         tableContentContainer.classList.remove('burger-active');
@@ -378,12 +380,12 @@ function visualizeButtonAstart(grid, visualizeButton) {
             const finishNode = getFinishNode(grid);
             const visitedNodesInOrder = aStart(grid, startNode, finishNode);
             const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-            animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+            animatePath(visitedNodesInOrder, nodesInShortestPathOrder);
         }
     })
 }
 
-//Dijkstra's algorithm Visualize button
+//BFS and Dijkstra's algorithm visualize button
 function visualizeButtonDijkstra(grid, visualizeButton) {
     //Visualize Button
     visualizeButton.addEventListener('click', () => {
@@ -395,7 +397,7 @@ function visualizeButtonDijkstra(grid, visualizeButton) {
             const finishNode = getFinishNode(grid);
             const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
             const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-            animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+            animatePath(visitedNodesInOrder, nodesInShortestPathOrder);
         }
     });
 }
@@ -437,8 +439,8 @@ function createRandomWallsAndWeight(event, grid) {
     }
     if (!isRunning && isReset) {
         var nodesArray = getAllNodes(grid);
-        var totalNumberofWalls = 200;
-        while (totalNumberofWalls > 0) {
+        var totalNumberOfNodes = 200;
+        while (totalNumberOfNodes > 0) {
             random = randomNumber(nodesArray.length);
             if (random / 50 == 0) {
                 var row = (random / 50) - 1;
@@ -467,12 +469,12 @@ function createRandomWallsAndWeight(event, grid) {
                     grid[row][col].isWeighted = true;
                 }
             }
-            totalNumberofWalls--;
+            totalNumberOfNodes--;
         }
     }
 }
 
-//Random function for auto generating walls
+//Random function to pick a random node on the grid for auto generating walls/weight
 function randomNumber(length) {
     return Math.floor(Math.random() * length);
 }
@@ -504,7 +506,7 @@ function getFinishNode(grid) {
 }
 
 //Animation for Dijkstra's algorithm -  visited nodes in order
-function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+function animatePath(visitedNodesInOrder, nodesInShortestPathOrder) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
         if (i === visitedNodesInOrder.length) {
             setTimeout(() => {
