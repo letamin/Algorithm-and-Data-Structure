@@ -94,19 +94,19 @@
   outline: none;
 }
 
-.algorithm-dropdown button:focus + ul,
-.datastructure-dropdown button:focus + ul {
-  visibility: visible;
-  transform: translateY(10px);
-}
-
 /*Something strange is happening here....*/
 .algorithm:hover,
 .data-structure:hover {
   background-color: #326fa8;
   color: white;
-  transition: 0.1s ease;
+  transition: transform 0.5s ease;
   transform: scale(1.2);
+}
+
+.visible {
+  visibility: visible !important;
+  transition: 0.5s ease;
+  transform: translateY(10px);
 }
 
 .down {

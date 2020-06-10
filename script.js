@@ -5,6 +5,9 @@ const tableContentContainer = document.querySelector(".table-contents-container"
 const illustrationContainer = document.querySelector('.illustration-container');
 const codeContainer = document.querySelector('.code-container');
 const burgerButton = document.querySelector('.burger');
+const buttonNav = Array.from(document.querySelectorAll('.dropdown-container'));
+const algorithmUL = document.querySelector('.ul-algo');
+const dataStructureUL = document.querySelector('.ul-ds');
 
 const dataStructureObject = [
     {
@@ -38,7 +41,6 @@ var FINISH_NODE_COL = 3;
 var isRunning = false;
 var isReset = true;
 
-
 if (document.readyState == 'loading') {
     document.addEventListener('DOMContentLoaded', ready);
 } else {
@@ -46,6 +48,7 @@ if (document.readyState == 'loading') {
 }
 
 function ready() {
+    dropdownActive();
     burgerActive();
     dataStructureArray.forEach((data) => {
         data.addEventListener('click', getName);
@@ -58,10 +61,14 @@ function ready() {
 function setContainer(event) {
     if (codeContainer.classList.contains('hide')) {
         clearScreen();
+        algorithmUL.classList.remove('visible');
+        dataStructureUL.classList.remove('visible');
         getInitialGrid(event.target.innerHTML);
     } else {
         clearScreen();
         codeContainer.classList.add('hide');
+        algorithmUL.classList.remove('visible');
+        dataStructureUL.classList.remove('visible');
         tableContentContainer.classList.add('background-color');
         tableContentContainer.style.setProperty('flex', '0.2');
         getInitialGrid(event.target.innerHTML);
@@ -792,10 +799,12 @@ function getNodesInShortestPathOrder(finishNode) {
 function getName(event) {
     if (codeContainer.classList.contains('hide')) {
         codeContainer.classList.remove('hide');
+        dataStructureUL.classList.remove('visible');
         const foundDataStructure = dataStructureObject.find((obj) => obj.name == event.target.innerHTML);
         getInformation(foundDataStructure);
         tableContentContainer.classList.add('background-color');
     } else {
+        dataStructureUL.classList.remove('visible');
         const foundDataStructure = dataStructureObject.find((obj) => obj.name === event.target.innerHTML);
         getInformation(foundDataStructure);
         tableContentContainer.classList.add('background-color');
@@ -1542,17 +1551,17 @@ function hashTableFindAnimation() {
     hashKeyInserted2.style.animation = `found-hash 1s ease-in-out 4s`
 }
 
-//TODO: replay button
-function replayButton(dataObject, dataOperationArray) {
-    var replayButton = document.createElement('span');
-    replayButton.innerHTML = `<i class="fas fa-redo"></i>`
-    replayButton.classList.add('redo-icon');
-    illustrationContainer.appendChild(replayButton);
+//TODO: replay button for the data structure algorithm
+// function replayButton(dataObject, dataOperationArray) {
+//     var replayButton = document.createElement('span');
+//     replayButton.innerHTML = `<i class="fas fa-redo"></i>`
+//     replayButton.classList.add('redo-icon');
+//     illustrationContainer.appendChild(replayButton);
 
-    replayButton.addEventListener('click', () => {
-        displayOperation(dataObject, dataOperationArray)
-    })
-}
+//     replayButton.addEventListener('click', () => {
+//         displayOperation(dataObject, dataOperationArray)
+//     })
+// }
 
 //Add the complexity table for the selected data object
 function addComplexityTable(complexityTable) {
@@ -1727,10 +1736,10 @@ function displayIntro(dataObject) {
             break;
     }
 }
-
-function displayBurgerButton() {
-    burgerButton.style.setProperty('display', 'flex');
-}
+//TODO: burger button only appears after select algorithm/data structure
+// function displayBurgerButton() {
+//     burgerButton.style.setProperty('display', 'flex');
+// }
 
 //Display the Intro text and illustration of the selected data object
 function introTextAndIllustrationDisplay(dataObject, introDiv) {
@@ -1746,6 +1755,22 @@ function introTextAndIllustrationDisplay(dataObject, introDiv) {
 function burgerActive() {
     burgerButton.addEventListener('click', () => {
         tableContentContainer.classList.toggle('burger-active');
+    })
+}
+
+//Display dropdown menus
+function dropdownActive() {
+    buttonNav.forEach(button => {
+        button.addEventListener('click', () => {
+            var target = event.target.innerHTML;
+            var newTarget = target.replace(`<i class="arrow down"></i>`, "");
+            if (newTarget == 'Algorithm') {
+                console.log(algorithmUL)
+                algorithmUL.classList.toggle('visible');
+            } else if (newTarget == "Data Structure") {
+                dataStructureUL.classList.toggle('visible');
+            }
+        })
     })
 }
 
