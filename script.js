@@ -5,9 +5,18 @@ const tableContentContainer = document.querySelector(".table-contents-container"
 const illustrationContainer = document.querySelector('.illustration-container');
 const codeContainer = document.querySelector('.code-container');
 const burgerButton = document.querySelector('.burger');
+const brand = document.querySelector('.brand');
 const buttonNav = Array.from(document.querySelectorAll('.dropdown-container'));
 const algorithmUL = document.querySelector('.ul-algo');
 const dataStructureUL = document.querySelector('.ul-ds');
+const tutorialCounter = document.querySelector('.tutorial-counter');
+const tutorialContainer = document.querySelector('.tutorial');
+const tutorialHeader = document.querySelector('.tutorial-header');
+const tutorialIntro = document.querySelector('.tutorial-intro');
+const tutorialParagraph = document.querySelector('.tutorial-paragraph');
+const buttonNext = document.querySelector('.btn-next');
+const buttonPrevious = document.querySelector('.btn-previous');
+const buttonSkip = document.querySelector('.btn-skip');
 
 const dataStructureObject = [
     {
@@ -50,6 +59,10 @@ if (document.readyState == 'loading') {
 function ready() {
     dropdownActive();
     burgerActive();
+    tutorialButtonsEventListener();
+    brand.addEventListener('click', () => {
+        tutorialContainer.classList.remove('transparent');
+    });
     dataStructureArray.forEach((data) => {
         data.addEventListener('click', getName);
     })
@@ -70,7 +83,7 @@ function setContainer(event) {
         algorithmUL.classList.remove('visible');
         dataStructureUL.classList.remove('visible');
         tableContentContainer.classList.add('background-color');
-        tableContentContainer.style.setProperty('flex', '0.2');
+        tableContentContainer.style.setProperty('flex', '0.1');
         getInitialGrid(event.target.innerHTML);
     }
 }
@@ -430,7 +443,6 @@ function visualizeButtonAstart(grid, visualizeButton) {
 
 //BFS and Dijkstra's algorithm visualize button
 function visualizeButtonDijkstra(grid, visualizeButton) {
-    //Visualize Button
     visualizeButton.addEventListener('click', () => {
         tableContentContainer.classList.remove('burger-active');
         if (!isRunning) {
@@ -794,16 +806,18 @@ function getNodesInShortestPathOrder(finishNode) {
     return nodesInShortestPathOrder;
 }
 
-/***************************************************************************************************************/
+/************************************************* Data Structure ******************************************************************/
 //Get the Data Strucuture name
 function getName(event) {
     if (codeContainer.classList.contains('hide')) {
+        tableContentContainer.style.setProperty('flex', '0.2');
         codeContainer.classList.remove('hide');
         dataStructureUL.classList.remove('visible');
         const foundDataStructure = dataStructureObject.find((obj) => obj.name == event.target.innerHTML);
         getInformation(foundDataStructure);
         tableContentContainer.classList.add('background-color');
     } else {
+        tableContentContainer.style.setProperty('flex', '0.2');
         dataStructureUL.classList.remove('visible');
         const foundDataStructure = dataStructureObject.find((obj) => obj.name === event.target.innerHTML);
         getInformation(foundDataStructure);
@@ -852,7 +866,6 @@ function displayTableContent(dataObject) {
     if (!illustrationContainer.hasChildNodes()) {
         displayIntro(dataObject);
     }
-
 }
 
 //Operations of the selected data object
@@ -1765,13 +1778,86 @@ function dropdownActive() {
             var target = event.target.innerHTML;
             var newTarget = target.replace(`<i class="arrow down"></i>`, "");
             if (newTarget == 'Algorithm') {
-                console.log(algorithmUL)
                 algorithmUL.classList.toggle('visible');
+                dataStructureUL.classList.remove('visible');
             } else if (newTarget == "Data Structure") {
                 dataStructureUL.classList.toggle('visible');
+                algorithmUL.classList.remove('visible');
             }
         })
     })
+}
+
+function tutorialButtonsEventListener() {
+    var counter = 1;
+
+    buttonSkip.addEventListener('click', () => {
+        counter = 1;
+        tutorialDisplay(counter);
+        tutorialContainer.classList.add('transparent');
+    })
+
+    buttonNext.addEventListener('click', () => {
+        counter++;
+        buttonNext.innerHTML = 'Next';
+        if (counter == 7) {
+            buttonNext.innerHTML = 'Finish';
+        }
+        if (counter == 8) {
+            tutorialContainer.classList.add('transparent');
+            counter = 1;
+        }
+        tutorialCounter.innerHTML = `${counter}/7`;
+        tutorialDisplay(counter);
+    })
+
+    buttonPrevious.addEventListener('click', () => {
+        counter--;
+        if (counter == 0) counter = 1;
+        tutorialCounter.innerHTML = `${counter}/7`;
+        tutorialDisplay(counter);
+    })
+}
+
+function tutorialDisplay(counter) {
+    tutorialCounter.innerHTML = `${counter}/7`;
+    if (counter == 1) {
+        tutorialHeader.innerHTML = `Welcome to Algorithm and Data Structure!`;
+        tutorialIntro.innerHTML = `This guide will walk you through all the features of this application.`;
+        tutorialParagraph.innerHTML = `If you want to dive right in, you can press the "Skip tutorial" button, or you can click "Next" to continue.`;
+    } else if (counter == 2) {
+        tutorialHeader.innerHTML = `What is this?`;
+        tutorialIntro.innerHTML = `This application will help to visualize various algorithms and data structures in action, and more!`;
+        tutorialParagraph.innerHTML =
+            `For the Algorithms, they are built on a 2D grid, where 90 degree turns have a "cost" of 1 and moving from one node to another also have a "cost" of 1 (they cannot go diagonally).
+            <br><br>
+            For the Data Structure, each data structure will have its own illustrations based on the selected operation.`
+    } else if (counter == 3) {
+        tutorialHeader.innerHTML = `Picking an Algorithm or Data Structure`;
+        tutorialIntro.innerHTML = `Choose your Algorithm or Data Structure from the dropdown menu above.`;
+        tutorialParagraph.innerHTML =
+            `For the Algorithm, please note that some of them are <i><b>unweighted</b></i> while others are <i><b>weighted</b></i>. An <i><b>unweighted</b></i> algorithm does not take weight nodes into account, whereas <i><b>weighted</b></i> ones do.
+            Additionally, not all algorithm guarantees the shortest path!`;
+    } else if (counter == 4) {
+        tutorialHeader.innerHTML = `Adding walls and weights`;
+        tutorialIntro.innerHTML =
+            `"Left" click on the grid to create a wall and "Right" click to create a weight node.`;
+        tutorialParagraph.innerHTML = `Nodes cannot pass through a wall while passing throught a weight node will "cost" more. A weight node will have the "cost" of 15.`;
+    } else if (counter == 5) {
+        tutorialHeader.innerHTML = `Dragging Nodes`;
+        tutorialIntro.innerHTML = `Click on the start node or finish node then drag them to the new locations.`;
+        tutorialParagraph.innerHTML = `Nodes can be dragged to the new locations to see the shortest path between the new nodes. Just put them anywhere you want!`;
+    } else if (counter == 6) {
+        tutorialHeader.innerHTML = `Visualize and more`;
+        tutorialIntro.innerHTML = `Use the navbar on the top, table of contents or burger button on your left to visualize and do other stuffs`;
+        tutorialParagraph.innerHTML =
+            `For the Algorithms, you can clear the grid, or generate a random wall/weight grid with the "Random Wall" or "Random Weight" button or just combine them!
+        For the Data Structure, pick an operation of your choice and see it in action!`;
+    } else if (counter == 7) {
+        tutorialHeader.innerHTML = `Enjoy!`;
+        tutorialIntro.innerHTML = `Hope you will have as much as I do fun playing around with this.`;
+        tutorialParagraph.innerHTML = `If you want to access this tutorial again, click on the "Data Structure and Algorithm" on the top left corner.`;
+    }
 }
 
 //Clear functions. There are clear all on screen, or clear only one of the containers
