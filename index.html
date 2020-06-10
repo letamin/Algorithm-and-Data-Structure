@@ -12,6 +12,7 @@
 </head>
 
 <body>
+    <div class="tutorial"></div>
     <div class="big-container">
         <nav class="main-nav">
             <div class="burger">
@@ -22,23 +23,19 @@
             <div class="dropdown">
                 <div class="brand">Data Structure and Algorithm</div>
                 <div class="nav-content-container">
-                    <div class="algorithm-dropdown">
-                        <button class="button-nav">
-                            Algorithm<i class="arrow down"></i>
-                        </button>
-                        <ul>
+                    <div class="algorithm-dropdown dropdown-container">
+                        <button class="button-nav algoBtn">Algorithm<i class="arrow down"></i></button>
+                        <ul class="ul-algo">
                             <li class="algorithm dijkstra">Dijkstra</li>
-                            <li class="algorithm 2">Algo 2</li>
-                            <li class="algorithm 3">Algo 3</li>
-                            <li class="algorithm 4">Algo 4</li>
+                            <li class="algorithm breath-first-search">Breadth-first search</li>
+                            <li class="algorithm a*">A*</li>
+                            <li class="algorithm depth-first-search">Depth-first search</li>
                             <li class="algorithm 5">Algo 5</li>
                         </ul>
                     </div>
-                    <div class="datastructure-dropdown">
-                        <button class="button-nav">
-                            Data Structure<i class="arrow down"></i>
-                        </button>
-                        <ul>
+                    <div class="datastructure-dropdown dropdown-container">
+                        <button class="button-nav dtStructureBtn">Data Structure<i class="arrow down"></i></button>
+                        <ul class="ul-ds">
                             <li class="data-structure link-list">Linked List</li>
                             <li class="data-structure queue">Queue</li>
                             <li class="data-structure stack">Stack</li>
@@ -54,7 +51,7 @@
             <div class="code-container"></div>
         </div>
     </div>
-    <script src="script.js" defer></script>
+    <script src="script.js"></script>
 </body>
 
 </html>
