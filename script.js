@@ -38,8 +38,14 @@ var FINISH_NODE_COL = 3;
 var isRunning = false;
 var isReset = true;
 
-initialize();
-function initialize() {
+
+if (document.readyState == 'loading') {
+    document.addEventListener('DOMContentLoaded', ready);
+} else {
+    ready();
+}
+
+function ready() {
     burgerActive();
     dataStructureArray.forEach((data) => {
         data.addEventListener('click', getName);
@@ -122,7 +128,7 @@ function getInitialGrid(algorithm) {
     illustrationContainer.appendChild(boardContainer);
     const guide = addGuide();
     boardContainer.appendChild(guide);
-    displayBurgerButton();
+    //displayBurgerButton();
 
     if (algorithm == 'Dijkstra') {
         const nodesArray = getAllNodes(grid);
@@ -610,7 +616,7 @@ function depthFirstSearch(grid, startNode, finishNode) {
     Start at the startNode with distance = 0, we loop through the openSet to find the nodes that have the closet distance to the finishNode 
         using the formula f(n) = g(n) + h(n) where g(n) is the closet distance from the startNode to that node and h(n) is the node's heuristics value.
     Then remove the closetNode from the openSet and evaluate the neighbors of the closetNode to calculate 
-        the distance from the startNode to the neighbors node (update the distance if it is closer than the current distance/push this )
+        the distance from the startNode to the neighbors node (update the distance if it is closer than the current distance/push this to the openSet if not )
     Repeat this process until find the finishNode 
 */
 function aStart(grid, startNode, finishNode) {
@@ -799,7 +805,7 @@ function getName(event) {
 //Display the table of contens for the selected data object
 function getInformation(dataObject) {
     clearScreen();
-    displayBurgerButton();
+    //displayBurgerButton();
     displayTitleTableContainer(dataObject);
     displayTableContent(dataObject);
 }

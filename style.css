@@ -82,15 +82,6 @@
   align-items: center;
 }
 
-/*Something strange is happening here....*/
-.algorithm:hover,
-.data-structure:hover {
-  background-color: #326fa8;
-  color: white;
-  transition: 0.1s ease;
-  transform: scale(1.2);
-}
-
 .dropdown button {
   background: none;
   text-decoration: none;
@@ -107,6 +98,15 @@
 .datastructure-dropdown button:focus + ul {
   visibility: visible;
   transform: translateY(10px);
+}
+
+/*Something strange is happening here....*/
+.algorithm:hover,
+.data-structure:hover {
+  background-color: #326fa8;
+  color: white;
+  transition: 0.1s ease;
+  transform: scale(1.2);
 }
 
 .down {
@@ -626,6 +626,7 @@ td {
     align-items: center;
     height: var(--height);
     left: 20px;
+    display: flex;
   }
 
   .table-contents-container {
