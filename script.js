@@ -142,14 +142,19 @@ function getInitialGrid(algorithm) {
         gridContainer.appendChild(tableRow);
         grid.push(currentRow);
     }
+    const guide = addGuide();
     table.appendChild(gridContainer);
     boardContainer.appendChild(introText);
     boardContainer.appendChild(table);
-    illustrationContainer.appendChild(boardContainer);
-    const guide = addGuide();
     boardContainer.appendChild(guide);
+    illustrationContainer.appendChild(boardContainer);
     //displayBurgerButton();
 
+    chooseAlgorithm(algorithm, grid, buttonContainer, introText);
+
+}
+
+function chooseAlgorithm(algorithm, grid, buttonContainer, introText) {
     if (algorithm == 'Dijkstra') {
         const nodesArray = getAllNodes(grid);
         const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
@@ -1842,7 +1847,7 @@ function tutorialDisplay(counter) {
         tutorialHeader.innerHTML = `Adding walls and weights`;
         tutorialIntro.innerHTML =
             `"Left" click on the grid to create a wall and "Right" click to create a weight node.`;
-        tutorialParagraph.innerHTML = `Nodes cannot pass through a wall while passing throught a weight node will "cost" more. A weight node will have the "cost" of 15.`;
+        tutorialParagraph.innerHTML = `Nodes cannot pass through a wall while passing throught a weight node will "cost" more. A weight node will have the "cost" of 10.`;
     } else if (counter == 5) {
         tutorialHeader.innerHTML = `Dragging Nodes`;
         tutorialIntro.innerHTML = `Click on the start node or finish node then drag them to the new locations.`;
@@ -1855,7 +1860,7 @@ function tutorialDisplay(counter) {
         For the Data Structure, pick an operation of your choice and see it in action!`;
     } else if (counter == 7) {
         tutorialHeader.innerHTML = `Enjoy!`;
-        tutorialIntro.innerHTML = `Hope you will have as much as I do fun playing around with this.`;
+        tutorialIntro.innerHTML = `Hope you will have as much fun as I do playing around with this.`;
         tutorialParagraph.innerHTML = `If you want to access this tutorial again, click on the "Data Structure and Algorithm" on the top left corner.`;
     }
 }
