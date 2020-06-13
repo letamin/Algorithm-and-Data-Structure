@@ -728,6 +728,10 @@ td {
   .btn-tutorial {
     font-size: 0.6em;
   }
+
+  .array-bar {
+    width: 1px !important;
+  }
 }
 
 @media only screen and (max-width: 550px) {
@@ -1313,3 +1317,14 @@ li.btn {
   pointer-events: all;
   z-index: 2;
 } */
+
+.array-container {
+  text-align: center;
+}
+
+.array-bar {
+  width: 2px;
+  display: inline-block;
+  margin: 0 1px;
+  background-color: turquoise;
+}

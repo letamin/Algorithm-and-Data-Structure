@@ -49,6 +49,8 @@ var FINISH_NODE_ROW = 3;
 var FINISH_NODE_COL = 3;
 var isRunning = false;
 var isReset = true;
+var isSorted = false;
+const NUMBER_OF_ARRAY_BARS = 300;
 
 if (document.readyState == 'loading') {
     document.addEventListener('DOMContentLoaded', ready);
@@ -64,19 +66,24 @@ function ready() {
         tutorialContainer.classList.remove('transparent');
     });
     dataStructureArray.forEach((data) => {
-        data.addEventListener('click', getName);
+        data.addEventListener('click', getNameDataStructure);
     })
     algorithmArray.forEach(algorithm => {
-        algorithm.addEventListener('click', setContainer);
+        algorithm.addEventListener('click', setContainerAlgorithm);
     })
 }
 
-function setContainer(event) {
+//Display based on the selected algorithm - Path finding or Sorting
+function setContainerAlgorithm(event) {
     if (codeContainer.classList.contains('hide')) {
         clearScreen();
         algorithmUL.classList.remove('visible');
         dataStructureUL.classList.remove('visible');
-        getInitialGrid(event.target.innerHTML);
+        if (event.target.classList.contains('path-finding')) {
+            getInitialGrid(event.target.innerHTML);
+        } else if (event.target.classList.contains('sort')) {
+            getInitialArraysForSort(event.target.innerHTML);
+        }
     } else {
         clearScreen();
         codeContainer.classList.add('hide');
@@ -84,10 +91,141 @@ function setContainer(event) {
         dataStructureUL.classList.remove('visible');
         tableContentContainer.classList.add('background-color');
         tableContentContainer.style.setProperty('flex', '0.1');
-        getInitialGrid(event.target.innerHTML);
+        if (event.target.classList.contains('path-finding')) {
+            getInitialGrid(event.target.innerHTML);
+        } else if (event.target.classList.contains('sort')) {
+            getInitialArraysForSort(event.target.innerHTML);
+        }
     }
 }
 
+function getInitialArraysForSort(algorithm) {
+    addRunButton(displayInitialArray(algorithm), algorithm);
+}
+
+function addRunButton(initialArray, algorithm) {
+    var operation = document.querySelector('.operation');
+    var runBtn = document.createElement('li');
+    runBtn.classList.add('btn', 'btn-slide');
+    runBtn.innerHTML = `Visualize`;
+    operation.appendChild(runBtn);
+    tableContentContainer.appendChild(operation);
+
+    runBtn.addEventListener('click', () => {
+        if (!isRunning && !isSorted) {
+            runBtnEventListener(initialArray, algorithm);
+        }
+    });
+}
+
+function runBtnEventListener(initialArray, algorithm) {
+    isRunning = true
+    if (algorithm == 'Bubble Sort') bubbleSort(initialArray);
+    else if (algorithm == 'Merge Sort') {
+        mergeSort(initialArray);
+        console.log(initialArray)
+    }
+}
+
+function addGenerateArrayButton(algorithm) {
+    var operation = document.createElement('ul');
+    var generateArrayButton = document.createElement('li');
+    generateArrayButton.classList.add('btn', 'btn-slide');
+    generateArrayButton.innerHTML = `Generate New Array`;
+    operation.classList.add('operation');
+    operation.appendChild(generateArrayButton);
+    tableContentContainer.appendChild(operation);
+
+    generateArrayButton.addEventListener('click', () => {
+        if (!isRunning) {
+            isSorted = false;
+            var initialArray = displayInitialArray(algorithm);
+            addRunButton(initialArray, algorithm);
+        }
+    })
+}
+
+function displayInitialArray(algorithm) {
+    var introText = document.createElement('h4');
+    const arrayContainer = document.createElement('div');
+    const initialArray = [];
+
+    clearScreen();
+    addGenerateArrayButton(algorithm);
+    addIntroTextSorting(introText, algorithm);
+
+    for (let i = 0; i < 200; i++) {
+        initialArray.push(randomIntFromInterval(5, 450));
+    }
+
+    initialArray.forEach((barValue, index) => {
+        var displayedBar = document.createElement('div');
+        displayedBar.classList.add('array-bar');
+        displayedBar.style.height = `${barValue}px`;
+        displayedBar.setAttribute('id', `bar-${index + 1}`);
+        arrayContainer.appendChild(displayedBar);
+    })
+    arrayContainer.classList.add('array-container');
+    arrayContainer.appendChild(introText);
+    illustrationContainer.appendChild(arrayContainer);
+
+    return initialArray;
+}
+
+function addIntroTextSorting(introText, algorithm) {
+    switch (algorithm) {
+        case 'Bubble Sort':
+            introText.innerHTML = `Bubble Sort is a simple sort algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.`;
+            break;
+    }
+}
+
+function bubbleSort(array) {
+    for (let i = 0; i < array.length - 1; i++) {
+        setTimeout(() => {
+            for (let j = 0; j < array.length - 1; j++) {
+                if (array[j] > array[j + 1]) {
+                    var barA = document.querySelector(`#bar-${j + 1}`); //selec #bar-[j+1] because #bar-index starts with 1 while j stats with 0
+                    var barB = document.querySelector(`#bar-${j + 2}`);
+                    var temp = array[j];
+                    array[j] = array[j + 1];
+                    array[j + 1] = temp;
+                    barA.style.height = `${array[j]}px`;
+                    barB.style.height = `${array[j + 1]}px`;
+                }
+            }
+            if (i == array.length - 2) {
+                isRunning = false;
+                isSorted = true;
+            }
+        }, i * 100);
+    }
+}
+
+function mergeSort(array) {
+    if (array.length == 1) return array;
+    const middleIndex = Math.floor(array.length / 2);
+    const firstHalf = mergeSort(array.slice(0, middleIndex));
+    const secondHalf = mergeSort(array.slice(middleIndex));
+    return doMerge(firstHalf, secondHalf);
+}
+
+function doMerge(arr1, arr2) {
+    let sorted = [];
+    while (arr1.length && arr2.length) {
+        if (arr1[0] < arr2[0]) sorted.push(arr1.shift());
+        else sorted.push(arr2.shift());
+    };
+
+    return sorted.concat(arr1.slice().concat(arr2.slice()));
+}
+
+function randomIntFromInterval(min, max) {
+    // min and max included
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+/************************************************* Path Finding Algorithm ******************************************************************/
 //Node object for the Algorithm
 function createNode(col, row) {
     return {
@@ -150,16 +288,15 @@ function getInitialGrid(algorithm) {
     illustrationContainer.appendChild(boardContainer);
     //displayBurgerButton();
 
-    chooseAlgorithm(algorithm, grid, buttonContainer, introText);
-
+    handleChoosenAlgorithm(algorithm, grid, buttonContainer, introText);
 }
 
-function chooseAlgorithm(algorithm, grid, buttonContainer, introText) {
+function handleChoosenAlgorithm(algorithm, grid, buttonContainer, introText) {
     if (algorithm == 'Dijkstra') {
         const nodesArray = getAllNodes(grid);
         const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
         dragNodes();
-        addIntroText(introText, algorithm);
+        addIntroTextPathFinding(introText, algorithm);
         addRestartButton(buttonContainer);
         addRandomWallButton(buttonContainer);
         addRandomWeightButton(buttonContainer);
@@ -175,7 +312,7 @@ function chooseAlgorithm(algorithm, grid, buttonContainer, introText) {
         dragNodes();
         addRestartButton(buttonContainer);
         addRandomWallButton(buttonContainer);
-        addIntroText(introText, algorithm);
+        addIntroTextPathFinding(introText, algorithm);
         getNodesForWalls(nodesArray);
         randomWallCreate(grid);
         restartButton(grid);
@@ -184,7 +321,7 @@ function chooseAlgorithm(algorithm, grid, buttonContainer, introText) {
         const nodesArray = getAllNodes(grid);
         const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
         dragNodes();
-        addIntroText(introText, algorithm);
+        addIntroTextPathFinding(introText, algorithm);
         addRestartButton(buttonContainer);
         addRandomWallButton(buttonContainer);
         addRandomWeightButton(buttonContainer);
@@ -200,7 +337,7 @@ function chooseAlgorithm(algorithm, grid, buttonContainer, introText) {
         dragNodes();
         addRestartButton(buttonContainer);
         addRandomWallButton(buttonContainer);
-        addIntroText(introText, algorithm);
+        addIntroTextPathFinding(introText, algorithm);
         getNodesForWalls(nodesArray);
         randomWallCreate(grid);
         restartButton(grid);
@@ -235,7 +372,7 @@ function addGuide() {
 }
 
 //Set the introduction text for the selected algorithms
-function addIntroText(introText, algorithm) {
+function addIntroTextPathFinding(introText, algorithm) {
     switch (algorithm) {
         case 'Dijkstra':
             introText.innerHTML = `Dijkstra's algorithm is weighted and guarantees the shortest path`;
@@ -423,7 +560,6 @@ function visualizeButtonDFS(grid, visualizeButton) {
             const startNode = getStartNodes(grid);
             const finishNode = getFinishNode(grid);
             const visitedNodesInOrder = depthFirstSearch(grid, startNode, finishNode);
-            console.log(visitedNodesInOrder)
             const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
             animatePath(visitedNodesInOrder, nodesInShortestPathOrder);
         }
@@ -813,7 +949,7 @@ function getNodesInShortestPathOrder(finishNode) {
 
 /************************************************* Data Structure ******************************************************************/
 //Get the Data Strucuture name
-function getName(event) {
+function getNameDataStructure(event) {
     if (codeContainer.classList.contains('hide')) {
         tableContentContainer.style.setProperty('flex', '0.2');
         codeContainer.classList.remove('hide');
