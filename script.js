@@ -100,6 +100,7 @@ function setContainerAlgorithm(event) {
 }
 
 function getInitialArraysForSort(algorithm) {
+    isSorted = false;
     addRunButton(displayInitialArray(algorithm), algorithm);
 }
 
@@ -119,11 +120,12 @@ function addRunButton(initialArray, algorithm) {
 }
 
 function runBtnEventListener(initialArray, algorithm) {
-    isRunning = true
-    if (algorithm == 'Bubble Sort') bubbleSort(initialArray);
-    else if (algorithm == 'Merge Sort') {
+    isRunning = true;
+    if (algorithm == 'Bubble Sort') {
+        bubbleSort(initialArray);
+    } else if (algorithm == 'Merge Sort') {
+        console.log("runBtnEventListener -> initialArray", initialArray)
         mergeSort(initialArray);
-        console.log(initialArray)
     }
 }
 
@@ -147,6 +149,7 @@ function addGenerateArrayButton(algorithm) {
 
 function displayInitialArray(algorithm) {
     var introText = document.createElement('h4');
+    var sortContainer = document.createElement('div');
     const arrayContainer = document.createElement('div');
     const initialArray = [];
 
@@ -154,20 +157,23 @@ function displayInitialArray(algorithm) {
     addGenerateArrayButton(algorithm);
     addIntroTextSorting(introText, algorithm);
 
-    for (let i = 0; i < 200; i++) {
-        initialArray.push(randomIntFromInterval(5, 450));
+    for (let i = 0; i < 20; i++) {
+        initialArray.push(randomIntFromInterval(5, 200));
     }
 
     initialArray.forEach((barValue, index) => {
         var displayedBar = document.createElement('div');
-        displayedBar.classList.add('array-bar');
+        displayedBar.classList.add('array-bar', `bar-${barValue}`);
         displayedBar.style.height = `${barValue}px`;
         displayedBar.setAttribute('id', `bar-${index + 1}`);
         arrayContainer.appendChild(displayedBar);
     })
     arrayContainer.classList.add('array-container');
-    arrayContainer.appendChild(introText);
-    illustrationContainer.appendChild(arrayContainer);
+    sortContainer.classList.add('sort-container');
+    introText.classList.add('sort-intro');
+    sortContainer.appendChild(arrayContainer);
+    sortContainer.appendChild(introText);
+    illustrationContainer.appendChild(sortContainer);
 
     return initialArray;
 }
@@ -184,9 +190,10 @@ function bubbleSort(array) {
     for (let i = 0; i < array.length - 1; i++) {
         setTimeout(() => {
             for (let j = 0; j < array.length - 1; j++) {
+                var barA = document.querySelector(`#bar-${j + 1}`); //selec #bar-[j+1] because #bar-index starts with 1 while j stats with 0
+                var barB = document.querySelector(`#bar-${j + 2}`);
+
                 if (array[j] > array[j + 1]) {
-                    var barA = document.querySelector(`#bar-${j + 1}`); //selec #bar-[j+1] because #bar-index starts with 1 while j stats with 0
-                    var barB = document.querySelector(`#bar-${j + 2}`);
                     var temp = array[j];
                     array[j] = array[j + 1];
                     array[j + 1] = temp;
@@ -194,30 +201,106 @@ function bubbleSort(array) {
                     barB.style.height = `${array[j + 1]}px`;
                 }
             }
-            if (i == array.length - 2) {
-                isRunning = false;
-                isSorted = true;
-            }
         }, i * 100);
+        if (i == array.length - 2) {
+            isRunning = false;
+            isSorted = true;
+        }
     }
 }
 
-function mergeSort(array) {
-    if (array.length == 1) return array;
-    const middleIndex = Math.floor(array.length / 2);
-    const firstHalf = mergeSort(array.slice(0, middleIndex));
-    const secondHalf = mergeSort(array.slice(middleIndex));
-    return doMerge(firstHalf, secondHalf);
+function mergeSort(initialArray) {
+    const animations = getMergeSortAnimations(initialArray);
+    for (let i = 0; i < animations.length; i++) {
+        const arrayBars = document.getElementsByClassName('array-bar');
+        const isColorChange = i % 3 !== 2;
+        if (isColorChange) {
+            const [barOneIdx, barTwoIdx] = animations[i];
+            const barOneStyle = arrayBars[barOneIdx].style;
+            const barTwoStyle = arrayBars[barTwoIdx].style;
+            const color = i % 3 === 0 ? 'red' : 'turquoise';
+            setTimeout(() => {
+                barOneStyle.backgroundColor = color;
+                barTwoStyle.backgroundColor = color;
+            }, i * 10);
+        } else {
+            setTimeout(() => {
+                const [barOneIdx, newHeight] = animations[i];
+                const barOneStyle = arrayBars[barOneIdx].style;
+                barOneStyle.height = `${newHeight}px`;
+            }, i * 10);
+        }
+        if (i == animations.length - 1) {
+            isRunning = false;
+            isSorted = true;
+        }
+    }
 }
 
-function doMerge(arr1, arr2) {
-    let sorted = [];
-    while (arr1.length && arr2.length) {
-        if (arr1[0] < arr2[0]) sorted.push(arr1.shift());
-        else sorted.push(arr2.shift());
-    };
+//This function just past the auxiliaryArray along with the animations array to the "real" merge sort function
+function getMergeSortAnimations(initialArray) {
+    const animations = [];
+    if (initialArray.length <= 1) return initialArray;
+    const auxiliaryArray = initialArray.slice();
+    mergeSortHelper(initialArray, 0, initialArray.length - 1, auxiliaryArray, animations);
+    return animations;
+}
 
-    return sorted.concat(arr1.slice().concat(arr2.slice()));
+//Split the arrays into multiple smaller arrays
+function mergeSortHelper(
+    mainArray,
+    startIdx,
+    endIdx,
+    auxiliaryArray,
+    animations,
+) {
+    if (startIdx === endIdx) return;
+    const middleIdx = Math.floor((startIdx + endIdx) / 2);
+    mergeSortHelper(auxiliaryArray, startIdx, middleIdx, mainArray, animations);
+    mergeSortHelper(auxiliaryArray, middleIdx + 1, endIdx, mainArray, animations);
+    doMerge(mainArray, startIdx, middleIdx, endIdx, auxiliaryArray, animations);
+}
+
+function doMerge(
+    mainArray,
+    startIdx,
+    middleIdx,
+    endIdx,
+    auxiliaryArray, //The array to keep track of where the bars are in the initial array
+    animations,
+) {
+    let k = startIdx;
+    let i = startIdx;
+    let j = middleIdx + 1;
+    while (i <= middleIdx && j <= endIdx) {
+        // These are the values that we're comparing; we push them once to change their color to red.
+        animations.push([i, j]);
+        // These are the values that we're comparing; we push them a second time to revert their color back to the original.
+        animations.push([i, j]);
+        if (auxiliaryArray[i] <= auxiliaryArray[j]) {
+            // We overwrite the value at index k in the original array with the value at index i in the auxiliary array.
+            animations.push([k, auxiliaryArray[i]]);
+            mainArray[k++] = auxiliaryArray[i++];
+        } else {
+            // We overwrite the value at index k in the original array with the value at index j in the auxiliary array.
+            animations.push([k, auxiliaryArray[j]]);
+            mainArray[k++] = auxiliaryArray[j++];
+        }
+    }
+
+    //The below 2 loops will push the remaining elements into the arrays in case the array is not divided equally (one with 2 and one with 3 elements,...)
+    while (i <= middleIdx) {
+        animations.push([i, i]);
+        animations.push([i, i]);
+        animations.push([k, auxiliaryArray[i]]);
+        mainArray[k++] = auxiliaryArray[i++];
+    }
+    while (j <= endIdx) {
+        animations.push([j, j]);
+        animations.push([j, j]);
+        animations.push([k, auxiliaryArray[j]]);
+        mainArray[k++] = auxiliaryArray[j++];
+    }
 }
 
 function randomIntFromInterval(min, max) {

@@ -1318,13 +1318,18 @@ li.btn {
   z-index: 2;
 } */
 
-.array-container {
-  text-align: center;
-}
-
 .array-bar {
   width: 2px;
   display: inline-block;
   margin: 0 1px;
   background-color: turquoise;
+}
+
+.sort-container {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
 }
