@@ -39,6 +39,11 @@ const dataStructureObject = [
         name: "Hash Table",
         description: "In computing, a hash table (hash map) is a data structure which implements an associative array abstract data type, a structure that can map keys to values. A hash table uses a hash function to compute an index into an array of buckets or slots, from which the desired value can be found.",
         operation: ['Insert', 'Collisions', 'Delete', 'Find', 'Complexity']
+    },
+    {
+        name: "Heap",
+        description: "In computer science, a heap is a specialized tree-based data structure that satisfies the heap property described below. <br>• In a min heap, if P is a parent node of C, then the key (the value) of P is less than or equal to the key of C. <br>• In a max heap, the key of P is greater than or equal to the key of C.",
+        operation: ['Insert', 'Delete', 'heapifyUp', 'heapifyDown', 'Complexity']
     }
 ];
 
@@ -50,7 +55,6 @@ var FINISH_NODE_COL = 3;
 var isRunning = false;
 var isReset = true;
 var isSorted = false;
-const NUMBER_OF_ARRAY_BARS = 300;
 
 if (document.readyState == 'loading') {
     document.addEventListener('DOMContentLoaded', ready);
@@ -121,10 +125,10 @@ function addRunButton(initialArray, algorithm) {
 
 function runBtnEventListener(initialArray, algorithm) {
     isRunning = true;
+    tableContentContainer.classList.remove('burger-active');
     if (algorithm == 'Bubble Sort') {
         bubbleSort(initialArray);
     } else if (algorithm == 'Merge Sort') {
-        console.log("runBtnEventListener -> initialArray", initialArray)
         mergeSort(initialArray);
     }
 }
@@ -157,8 +161,8 @@ function displayInitialArray(algorithm) {
     addGenerateArrayButton(algorithm);
     addIntroTextSorting(introText, algorithm);
 
-    for (let i = 0; i < 20; i++) {
-        initialArray.push(randomIntFromInterval(5, 200));
+    for (let i = 0; i < 200; i++) {
+        initialArray.push(randomIntFromInterval(5, 450));
     }
 
     initialArray.forEach((barValue, index) => {
@@ -168,6 +172,7 @@ function displayInitialArray(algorithm) {
         displayedBar.setAttribute('id', `bar-${index + 1}`);
         arrayContainer.appendChild(displayedBar);
     })
+    tableContentContainer.classList.remove('burger-active');
     arrayContainer.classList.add('array-container');
     sortContainer.classList.add('sort-container');
     introText.classList.add('sort-intro');
@@ -182,6 +187,9 @@ function addIntroTextSorting(introText, algorithm) {
     switch (algorithm) {
         case 'Bubble Sort':
             introText.innerHTML = `Bubble Sort is a simple sort algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.`;
+            break;
+        case 'Merge Sort':
+            introText.innerHTML = `In computer science, merge sort (also commonly spelled mergesort) is an efficient, general-purpose, comparison-based sorting algorithm.`
             break;
     }
 }
@@ -201,7 +209,7 @@ function bubbleSort(array) {
                     barB.style.height = `${array[j + 1]}px`;
                 }
             }
-        }, i * 100);
+        }, i * 50);
         if (i == array.length - 2) {
             isRunning = false;
             isSorted = true;
@@ -222,13 +230,13 @@ function mergeSort(initialArray) {
             setTimeout(() => {
                 barOneStyle.backgroundColor = color;
                 barTwoStyle.backgroundColor = color;
-            }, i * 10);
+            }, i * 5);
         } else {
             setTimeout(() => {
                 const [barOneIdx, newHeight] = animations[i];
                 const barOneStyle = arrayBars[barOneIdx].style;
                 barOneStyle.height = `${newHeight}px`;
-            }, i * 10);
+            }, i * 5);
         }
         if (i == animations.length - 1) {
             isRunning = false;
@@ -246,14 +254,8 @@ function getMergeSortAnimations(initialArray) {
     return animations;
 }
 
-//Split the arrays into multiple smaller arrays
-function mergeSortHelper(
-    mainArray,
-    startIdx,
-    endIdx,
-    auxiliaryArray,
-    animations,
-) {
+//The auxiliaryArray to keep track of where the elements are in the mainArray. It is the one that is splitted into smaller arrays
+function mergeSortHelper(mainArray, startIdx, endIdx, auxiliaryArray, animations) {
     if (startIdx === endIdx) return;
     const middleIdx = Math.floor((startIdx + endIdx) / 2);
     mergeSortHelper(auxiliaryArray, startIdx, middleIdx, mainArray, animations);
@@ -261,14 +263,7 @@ function mergeSortHelper(
     doMerge(mainArray, startIdx, middleIdx, endIdx, auxiliaryArray, animations);
 }
 
-function doMerge(
-    mainArray,
-    startIdx,
-    middleIdx,
-    endIdx,
-    auxiliaryArray, //The array to keep track of where the bars are in the initial array
-    animations,
-) {
+function doMerge(mainArray, startIdx, middleIdx, endIdx, auxiliaryArray, animations) {
     let k = startIdx;
     let i = startIdx;
     let j = middleIdx + 1;
@@ -1647,6 +1642,67 @@ function displayOperation(dataObject, dataOperationArray) {
                 }
             })
         })
+    } else if (dataObject.name == 'Heap') {
+        dataOperationArray.forEach(data => {
+            data.addEventListener('click', () => {
+                tableContentContainer.classList.remove('burger-active');
+                data.classList.remove('toggle-choose');
+                switch (data.innerHTML) {
+                    case 'Insert':
+                        clearEverythingForOperationDisplay(data, dataOperationArray);
+
+                        var heapContainer = document.createElement('div');
+                        heapContainer.innerHTML =
+                            `<h3>Heap</h3>
+                            <div class="heap-container>
+                                <div class="heap-container">
+                                    <div class="heap-row">
+                                        <div class="heap-node replace-root">2</div>
+                                    </div>
+                                    <div class="heap-row">
+                                        <div class="heap-node line-right-2">4</div>
+                                        <div class="heap-node line-left-2 replace-node light-up">3</div>
+                                    </div>
+                                    <div class="heap-row">
+                                        <div class="heap-node line-right">17</div>
+                                        <div class="heap-node line-left">19</div>
+                                        <div class="heap-node line-right">36</div>
+                                        <div class="heap-node line-left new-node">1</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h3 class="text-result-slow">1 is added to the heap</h3>`
+                        heapContainer.classList.add('flex-container');
+                        illustrationContainer.appendChild(heapContainer);
+
+                        var heapInsertNewNode = document.querySelector('.new-node');
+                        var heapInsertReplaceNode = document.querySelector('.replace-node');
+                        var heapInsertReplaceRoot = document.querySelector('.replace-root');
+
+                        setTimeout(() => {
+                            heapInsertNewNode.innerHTML = '3';
+                            heapInsertReplaceNode.innerHTML = '1';
+                            heapInsertReplaceNode.style.animation = 'found 0.4s';
+                            setTimeout(() => {
+                                heapInsertReplaceRoot.innerHTML = '1';
+                                heapInsertReplaceNode.innerHTML = '2';
+                                heapInsertReplaceRoot.style.animation = 'found 0.4s';
+                            }, 2500);
+                        }, 2500);
+
+
+                        break;
+                    case 'Delete':
+                        break;
+                    case 'heapifyUp':
+                        break;
+                    case 'heapifyDown':
+                        break;
+                    case 'Complexity':
+                        break;
+                }
+            })
+        })
     }
 }
 
@@ -1902,6 +1958,7 @@ function displayIntro(dataObject) {
                 </div>`
             introTextAndIllustrationDisplay(dataObject, stackContainerIllustrationIntro);
             break;
+        //Hash Table intro
         case 'Hash Table':
             var hashTableContainerIllustrationIntro = document.createElement('div');
             hashTableContainerIllustrationIntro.innerHTML =
@@ -1970,6 +2027,28 @@ function displayIntro(dataObject) {
             textIntro.innerHTML = dataObject.description;
             textIntro.classList.add('code')
             codeContainer.appendChild(textIntro);
+            break;
+        //Heap intro
+        case 'Heap':
+            var heapContainerIllustrationIntro = document.createElement('div');
+            heapContainerIllustrationIntro.innerHTML =
+                `<h3>Heap</h3>
+                <div class="heap-container">
+                    <div class="heap-row">
+                        <div class="heap-node ">1</div>
+                    </div>
+                    <div class="heap-row">
+                        <div class="heap-node line-right-2">2</div>
+                        <div class="heap-node line-left-2">3</div>
+                    </div>
+                    <div class="heap-row">
+                        <div class="heap-node line-right">17</div>
+                        <div class="heap-node line-left">19</div>
+                        <div class="heap-node line-right">36</div>
+                        <div class="heap-node line-left">7</div>
+                    </div>
+                </div>`
+            introTextAndIllustrationDisplay(dataObject, heapContainerIllustrationIntro);
             break;
     }
 }
@@ -2048,7 +2127,10 @@ function tutorialDisplay(counter) {
     if (counter == 1) {
         tutorialHeader.innerHTML = `Welcome to Algorithm and Data Structure!`;
         tutorialIntro.innerHTML = `This guide will walk you through all the features of this application.`;
-        tutorialParagraph.innerHTML = `If you want to dive right in, you can press the "Skip tutorial" button, or you can click "Next" to continue.`;
+        tutorialParagraph.innerHTML =
+            `If you want to dive right in, you can press the "Skip tutorial" button, or you can click "Next" to continue. 
+            <br>
+            Please note that this is designed for desktop, viewing in mobile is not recommended!`;
     } else if (counter == 2) {
         tutorialHeader.innerHTML = `What is this?`;
         tutorialIntro.innerHTML = `This application will help to visualize various algorithms and data structures in action, and more!`;

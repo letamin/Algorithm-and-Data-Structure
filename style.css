@@ -1333,3 +1333,58 @@ li.btn {
   flex-direction: column;
   position: relative;
 }
+
+.heap-row {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px;
+}
+
+.heap-node {
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 40px;
+  background-color: yellowgreen;
+  border-radius: 50%;
+  position: relative;
+}
+
+.line-right::after,
+.line-left::after,
+.line-left-2::after,
+.line-right-2::after {
+  content: "";
+  position: absolute;
+  background-color: black;
+  height: 60px;
+  width: 2px;
+  z-index: -1;
+  top: -40px;
+}
+
+.line-right::after {
+  left: 32px;
+  transform: rotate(35deg);
+}
+
+.line-left::after {
+  left: 5px;
+  transform: rotate(145deg);
+}
+
+.line-right-2::after {
+  height: 80px;
+  top: -50px;
+  left: 35px;
+  transform: rotate(50deg);
+}
+
+.line-left-2::after {
+  height: 80px;
+  top: -50px;
+  left: 0px;
+  transform: rotate(130deg);
+}
