@@ -43,11 +43,11 @@ const dataStructureObject = [
     {
         name: "Heap",
         description: "In computer science, a heap is a specialized tree-based data structure that satisfies the heap property described below. <br>• In a min heap, if P is a parent node of C, then the key (the value) of P is less than or equal to the key of C. <br>• In a max heap, the key of P is greater than or equal to the key of C.",
-        operation: ['Insert', 'Delete', 'heapifyUp', 'heapifyDown', 'Complexity']
+        operation: ['Insert', 'Delete', 'Complexity']
     }
 ];
 
-//This is the defaul values for the Algorithm and maybe changed later
+//This is the defaul values for the Algorithms and maybe changed later
 var START_NODE_ROW = 0;
 var START_NODE_COL = 0;
 var FINISH_NODE_ROW = 3;
@@ -161,8 +161,14 @@ function displayInitialArray(algorithm) {
     addGenerateArrayButton(algorithm);
     addIntroTextSorting(introText, algorithm);
 
-    for (let i = 0; i < 200; i++) {
-        initialArray.push(randomIntFromInterval(5, 450));
+    if (document.body.clientWidth < 768) {
+        for (let i = 0; i < 90; i++) {
+            initialArray.push(randomIntFromInterval(5, 450));
+        }
+    } else {
+        for (let i = 0; i < 200; i++) {
+            initialArray.push(randomIntFromInterval(5, 450));
+        }
     }
 
     initialArray.forEach((barValue, index) => {
@@ -1650,60 +1656,117 @@ function displayOperation(dataObject, dataOperationArray) {
                 switch (data.innerHTML) {
                     case 'Insert':
                         clearEverythingForOperationDisplay(data, dataOperationArray);
+                        heapIllustraion(data.innerHTML);
 
-                        var heapContainer = document.createElement('div');
-                        heapContainer.innerHTML =
-                            `<h3>Heap</h3>
-                            <div class="heap-container>
-                                <div class="heap-container">
-                                    <div class="heap-row">
-                                        <div class="heap-node replace-root">2</div>
-                                    </div>
-                                    <div class="heap-row">
-                                        <div class="heap-node line-right-2">4</div>
-                                        <div class="heap-node line-left-2 replace-node light-up">3</div>
-                                    </div>
-                                    <div class="heap-row">
-                                        <div class="heap-node line-right">17</div>
-                                        <div class="heap-node line-left">19</div>
-                                        <div class="heap-node line-right">36</div>
-                                        <div class="heap-node line-left new-node">1</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <h3 class="text-result-slow">1 is added to the heap</h3>`
-                        heapContainer.classList.add('flex-container');
-                        illustrationContainer.appendChild(heapContainer);
-
-                        var heapInsertNewNode = document.querySelector('.new-node');
-                        var heapInsertReplaceNode = document.querySelector('.replace-node');
-                        var heapInsertReplaceRoot = document.querySelector('.replace-root');
-
-                        setTimeout(() => {
-                            heapInsertNewNode.innerHTML = '3';
-                            heapInsertReplaceNode.innerHTML = '1';
-                            heapInsertReplaceNode.style.animation = 'found 0.4s';
-                            setTimeout(() => {
-                                heapInsertReplaceRoot.innerHTML = '1';
-                                heapInsertReplaceNode.innerHTML = '2';
-                                heapInsertReplaceRoot.style.animation = 'found 0.4s';
-                            }, 2500);
-                        }, 2500);
-
-
+                        addCodeImage(codeContainer, data.innerHTML, dataObject.name);
                         break;
                     case 'Delete':
-                        break;
-                    case 'heapifyUp':
-                        break;
-                    case 'heapifyDown':
+                        clearEverythingForOperationDisplay(data, dataOperationArray);
+                        heapIllustraion(data.innerHTML);
+
+                        addCodeImage(codeContainer, data.innerHTML, dataObject.name);
                         break;
                     case 'Complexity':
+                        clearEverythingForOperationDisplay(data, dataOperationArray);
+                        var complexityTable = document.createElement('table');
+                        complexityTable.innerHTML =
+                            `<thead>
+                                <tr class="table-row">
+                                    <th scope="col">Insert</th>
+                                    <th scope="col">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-row">
+                                    <td>O(log n)</td>
+                                    <td>O(log n)</td>
+                                </tr>
+                            </tbody>`
+
+                        addComplexityTable(complexityTable);
                         break;
                 }
             })
         })
     }
+}
+
+function heapIllustraion(operation) {
+    var keyOne = 0;
+    var keyTwo = 0;
+    var keyThree = 3;
+    if (operation == 'Insert') {
+        keyOne = 2;
+        keyTwo = 1;
+    } else {
+        keyOne = 1;
+        keyTwo = 3;
+        keyThree = 2;
+    }
+
+    var heapContainer = document.createElement('div');
+    heapContainer.innerHTML =
+        `<h3>Heap</h3>
+        <div class="heap-container>
+            <div class="heap-container">
+                <div class="heap-row">
+                    <div class="heap-node replace-root">${keyOne}</div>
+                </div>
+                <div class="heap-row">
+                    <div class="heap-node line-right-2">4</div>
+                    <div class="heap-node line-left-2 replace-node light-up">${keyThree}</div>
+                </div>
+                <div class="heap-row">
+                    <div class="heap-node line-right">17</div>
+                    <div class="heap-node line-left">19</div>
+                    <div class="heap-node line-right">36</div>
+                    <div class="heap-node line-left new-node">${keyTwo}</div>
+                </div>
+            </div>
+        </div>
+        <h3 class="text-result-slow heap-result"></h3>`
+    heapContainer.classList.add('flex-container');
+    illustrationContainer.appendChild(heapContainer);
+
+    if (operation == 'Insert') {
+        heapInsertIllustraion();
+    } else if (operation == 'Delete') {
+        heapDeleteIllustraion();
+    }
+}
+
+function heapDeleteIllustraion() {
+    var heapDeleteRoot = document.querySelector('.replace-root');
+    var heapRoot = document.querySelector('.new-node');
+    var heapNode = document.querySelector('.replace-node');
+    var textResult = document.querySelector('.heap-result');
+
+    setTimeout(() => {
+        heapDeleteRoot.innerHTML = '3';
+        heapRoot.style.animation = `disappear 1s forwards`;
+        setTimeout(() => {
+            heapDeleteRoot.innerHTML = `2`;
+            heapNode.innerHTML = `3`;
+        }, 2500);
+    }, 2500);
+    textResult.innerHTML = `1 is deleted from the heap`;
+}
+
+function heapInsertIllustraion() {
+    var heapInsertNewNode = document.querySelector('.new-node');
+    var heapInsertReplaceNode = document.querySelector('.replace-node');
+    var heapInsertReplaceRoot = document.querySelector('.replace-root');
+    var textResult = document.querySelector('.heap-result');
+
+    setTimeout(() => {
+        heapInsertNewNode.innerHTML = '3';
+        heapInsertReplaceNode.innerHTML = '1';
+        setTimeout(() => {
+            heapInsertReplaceRoot.innerHTML = '1';
+            heapInsertReplaceNode.innerHTML = '2';
+        }, 2500);
+    }, 2500);
+    textResult.innerHTML = `1 is added to the heap`;
 }
 
 /* To display Hash table Insert, Collisions and Delete because they are the same.

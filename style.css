@@ -584,262 +584,6 @@ td {
   padding: 8px;
 }
 
-/********************************* On other screens *********************************/
-@media only screen and (min-width: 1600px) {
-  .cell.null::before,
-  .cell.null::after {
-    height: 3vh;
-  }
-
-  .icon-left {
-    transform: translateX(320%);
-  }
-
-  .hash-table-bucket td {
-    padding: 50px;
-  }
-}
-
-@media only screen and (max-width: 1400px) {
-  .algorithm-dropdown ul,
-  .datastructure-dropdown ul {
-    top: 80px;
-  }
-
-  .cell.null::before,
-  .cell.null::after {
-    height: 3vh;
-    width: 2px;
-  }
-}
-
-@media only screen and (max-width: 1024px) {
-  .main-container {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .burger {
-    position: absolute;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: var(--height);
-    left: 20px;
-    display: flex;
-  }
-
-  .table-contents-container {
-    position: absolute;
-    left: 0;
-    height: 85vh;
-    width: 20vw;
-    transform: translateX(-100%);
-    transition: transform 0.5s ease;
-    z-index: 2;
-  }
-
-  .cell.null::before,
-  .cell.null::after {
-    height: 3vh;
-  }
-
-  .cell {
-    font-size: 1.2em;
-    width: 6vw;
-  }
-
-  .dropdown button {
-    font-size: 1.2em;
-  }
-
-  .cell-container {
-    margin-right: 20px;
-  }
-
-  .hash-table-bucket td {
-    padding: 8px !important;
-  }
-
-  .hash-function {
-    background-color: white;
-  }
-}
-
-@media only screen and (max-width: 768px) {
-  .start-guide,
-  .finish-guide,
-  .visited-guide,
-  .shortest-guide,
-  .wall-guide,
-  .weight-guide {
-    height: 15px !important;
-    width: 15px !important;
-  }
-
-  .guide-text {
-    font-size: 0.6em;
-  }
-
-  .brand {
-    font-size: 1.2em;
-    padding-left: 5em;
-  }
-
-  .dropdown button {
-    font-size: 1em;
-  }
-
-  .operation li {
-    font-size: 1em;
-  }
-
-  .cell {
-    font-size: 1em;
-  }
-
-  .title {
-    font-size: 1em;
-  }
-
-  .table-contents-container {
-    width: 30vw;
-  }
-
-  h3,
-  h4 {
-    font-size: 1em;
-  }
-
-  .hash-table-bucket td {
-    padding: 0px 10px 0px 10px !important;
-  }
-
-  .node {
-    width: 15px !important;
-    height: 15px !important;
-  }
-
-  .boardContainer {
-    overflow-x: auto;
-  }
-
-  .tutorial,
-  .btn-tutorial {
-    font-size: 0.6em;
-  }
-
-  .array-bar {
-    width: 1px !important;
-  }
-}
-
-@media only screen and (max-width: 550px) {
-  .cell {
-    font-size: 0.8em;
-    width: 8vw;
-    height: 4vh;
-  }
-
-  .cell.null::before,
-  .cell.null::after {
-    height: 2vh;
-    width: 1px;
-  }
-
-  .dropdown {
-    justify-content: center;
-  }
-
-  .brand {
-    display: none;
-  }
-
-  .nav-content-container {
-    margin-right: 0;
-  }
-
-  .flex-container-col {
-    justify-content: flex-end !important;
-  }
-
-  .text-header-hash-table {
-    font-size: 0.8em;
-  }
-
-  .hash-table-cell,
-  .hash-table-bucket {
-    font-size: 0.7em;
-  }
-  .hash-table-cell {
-    height: 3vh;
-  }
-}
-
-.burger-active {
-  transform: translateX(0%);
-}
-
-@media only screen and (min-width: 400px) and (max-width: 550px) {
-  .icon-right-1 {
-    right: -20px !important;
-  }
-
-  .icon-right {
-    transform: scaleX(3) !important;
-  }
-
-  .icon-right-2 {
-    right: -10px !important;
-  }
-
-  .hash-table-bucket td {
-    padding: 12px;
-  }
-}
-
-@media only screen and (min-width: 320px) and (max-width: 400px) {
-  .icon-right-1 {
-    right: -25px !important;
-  }
-
-  .icon-right {
-    transform: scaleX(2) !important;
-  }
-
-  .icon-right-2 {
-    right: -10px !important;
-  }
-
-  .hash-table-bucket td {
-    padding: 5px;
-  }
-}
-
-@media only screen and (max-width: 1024px) and (orientation: landscape) {
-  .dropdown {
-    height: 20vh;
-  }
-
-  .burger {
-    height: 20vh;
-  }
-
-  .operation li {
-    font-size: 1em;
-  }
-
-  .table-contents-container {
-    height: auto;
-  }
-}
-
-@media only screen and (max-width: 768px) and (orientation: landscape) {
-  .hash-table-bucket td {
-    padding: 0px 5px 0px 5px;
-  }
-}
-
 /********************************* All the animations *********************************/
 @keyframes slideIn {
   from {
@@ -1387,4 +1131,246 @@ li.btn {
   top: -50px;
   left: 0px;
   transform: rotate(130deg);
+}
+
+/********************************* On other screens *********************************/
+@media only screen and (min-width: 1600px) {
+  .cell.null::before,
+  .cell.null::after {
+    height: 3vh;
+  }
+
+  .icon-left {
+    transform: translateX(320%);
+  }
+
+  .hash-table-bucket td {
+    padding: 50px;
+  }
+}
+
+@media only screen and (max-width: 1400px) {
+  .algorithm-dropdown ul,
+  .datastructure-dropdown ul {
+    top: 80px;
+  }
+
+  .cell.null::before,
+  .cell.null::after {
+    height: 3vh;
+    width: 2px;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .main-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .burger {
+    position: absolute;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: var(--height);
+    left: 20px;
+    display: flex;
+  }
+
+  .table-contents-container {
+    position: absolute;
+    left: 0;
+    height: 85vh;
+    width: 20vw;
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+    z-index: 2;
+  }
+
+  .cell.null::before,
+  .cell.null::after {
+    height: 3vh;
+  }
+
+  .cell {
+    font-size: 1.2em;
+    width: 6vw;
+  }
+
+  .dropdown button {
+    font-size: 1.2em;
+  }
+
+  .cell-container {
+    margin-right: 20px;
+  }
+
+  .hash-table-bucket td {
+    padding: 8px !important;
+  }
+
+  .hash-function {
+    background-color: white;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .start-guide,
+  .finish-guide,
+  .visited-guide,
+  .shortest-guide,
+  .wall-guide,
+  .weight-guide {
+    height: 15px !important;
+    width: 15px !important;
+  }
+
+  .guide-text {
+    font-size: 0.6em;
+  }
+
+  .brand {
+    font-size: 1.2em;
+    padding-left: 5em;
+  }
+
+  .dropdown button {
+    font-size: 1em;
+  }
+
+  .operation li {
+    font-size: 1em;
+  }
+
+  .cell {
+    font-size: 1em;
+  }
+
+  .title {
+    font-size: 1em;
+  }
+
+  .table-contents-container {
+    width: 30vw;
+  }
+
+  h3,
+  h4 {
+    font-size: 1em;
+  }
+
+  .hash-table-bucket td {
+    padding: 0px 10px 0px 10px;
+  }
+
+  .node {
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  .boardContainer {
+    overflow-x: auto;
+  }
+
+  .tutorial,
+  .btn-tutorial {
+    font-size: 0.6em;
+  }
+
+  .array-bar {
+    width: 1px !important;
+  }
+}
+
+@media (max-width: 667px) {
+  .dropdown {
+    height: 20vh;
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  .cell {
+    font-size: 0.8em;
+    width: 8vw;
+    height: 4vh;
+  }
+
+  .cell.null::before,
+  .cell.null::after {
+    height: 2vh;
+    width: 1px;
+  }
+
+  .dropdown {
+    justify-content: center;
+  }
+
+  .brand {
+    display: none;
+  }
+
+  .nav-content-container {
+    margin-right: 0;
+  }
+
+  .flex-container-col {
+    justify-content: flex-end !important;
+  }
+
+  .text-header-hash-table {
+    font-size: 0.8em;
+  }
+
+  .hash-table-cell,
+  .hash-table-bucket {
+    font-size: 0.7em;
+  }
+  .hash-table-cell {
+    height: 3vh;
+  }
+}
+
+.burger-active {
+  transform: translateX(0%);
+}
+
+@media only screen and (min-width: 400px) and (max-width: 550px) {
+  .icon-right-1 {
+    right: -20px !important;
+  }
+
+  .icon-right {
+    transform: scaleX(3) !important;
+  }
+
+  .icon-right-2 {
+    right: -10px !important;
+  }
+
+  .hash-table-bucket td {
+    padding: 12px;
+  }
+}
+
+@media only screen and (min-width: 320px) and (max-width: 400px) {
+  .icon-right-1 {
+    right: -25px !important;
+  }
+
+  .icon-right {
+    transform: scaleX(2) !important;
+  }
+
+  .icon-right-2 {
+    right: -10px !important;
+  }
+
+  .hash-table-bucket td {
+    padding: 5px;
+  }
+
+  .tutorial-text {
+    padding: 5px;
+  }
 }
