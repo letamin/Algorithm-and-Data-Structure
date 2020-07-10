@@ -340,11 +340,28 @@ function getInitialGrid(algorithm) {
     boardContainer.classList.add('boardContainer');
     buttonContainer.classList.add('operation');
 
-    for (let row = 0; row < 20; row++) {
+    var defaultRow = 20;
+    var defaultCol = 50;
+
+    if (document.body.clientWidth <= 320) {
+        defaultCol = 17;
+        defaultRow = 10;
+    } else if (document.body.clientWidth <= 375) {
+        defaultCol = 20;
+        defaultRow = 10;
+    } else if (document.body.clientWidth <= 430) {
+        defaultCol = 23;
+        defaultRow = 10;
+    } else if (document.body.clientWidth <= 780) {
+        defaultCol = 40;
+        defaultRow = 20;
+    }
+
+    for (let row = 0; row < defaultRow; row++) {
         const currentRow = [];
         var tableRow = document.createElement('tr');
         tableRow.setAttribute("id", `row-${row}`);
-        for (let col = 0; col < 50; col++) {
+        for (let col = 0; col < defaultCol; col++) {
             var currentNode = createNode(col, row);
             currentRow.push(createNode(col, row));
             var node = document.createElement('td');
@@ -372,10 +389,10 @@ function getInitialGrid(algorithm) {
     illustrationContainer.appendChild(boardContainer);
     //displayBurgerButton();
 
-    handleChoosenAlgorithm(algorithm, grid, buttonContainer, introText);
+    handleChoosenAlgorithm(algorithm, grid, buttonContainer, introText, defaultCol);
 }
 
-function handleChoosenAlgorithm(algorithm, grid, buttonContainer, introText) {
+function handleChoosenAlgorithm(algorithm, grid, buttonContainer, introText, defaultCol) {
     if (algorithm == 'Dijkstra') {
         const nodesArray = getAllNodes(grid);
         const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
@@ -386,8 +403,8 @@ function handleChoosenAlgorithm(algorithm, grid, buttonContainer, introText) {
         addRandomWeightButton(buttonContainer);
         getNodesForWalls(nodesArray);
         getNodesForWeight(nodesArray);
-        randomWallCreate(grid);
-        randomWeightCreate(grid);
+        randomWallCreate(grid, defaultCol);
+        randomWeightCreate(grid, defaultCol);
         restartButton(grid);
         visualizeButtonDijkstra(grid, visualizeButton);
     } else if (algorithm == 'Breadth-first search') {  //BFS is just Dijkstra's algorithm with all edges weight = 1, but for this visualizer, all 1 => no differences
@@ -398,7 +415,7 @@ function handleChoosenAlgorithm(algorithm, grid, buttonContainer, introText) {
         addRandomWallButton(buttonContainer);
         addIntroTextPathFinding(introText, algorithm);
         getNodesForWalls(nodesArray);
-        randomWallCreate(grid);
+        randomWallCreate(grid, defaultCol);
         restartButton(grid);
         visualizeButtonDijkstra(grid, visualizeButton);
     } else if (algorithm == 'A*') {
@@ -411,8 +428,8 @@ function handleChoosenAlgorithm(algorithm, grid, buttonContainer, introText) {
         addRandomWeightButton(buttonContainer);
         getNodesForWalls(nodesArray);
         getNodesForWeight(nodesArray);
-        randomWallCreate(grid);
-        randomWeightCreate(grid);
+        randomWallCreate(grid, defaultCol);
+        randomWeightCreate(grid, defaultCol);
         restartButton(grid);
         visualizeButtonAstart(grid, visualizeButton);
     } else if (algorithm == 'Depth-first search') {
@@ -423,7 +440,7 @@ function handleChoosenAlgorithm(algorithm, grid, buttonContainer, introText) {
         addRandomWallButton(buttonContainer);
         addIntroTextPathFinding(introText, algorithm);
         getNodesForWalls(nodesArray);
-        randomWallCreate(grid);
+        randomWallCreate(grid, defaultCol);
         restartButton(grid);
         visualizeButtonDFS(grid, visualizeButton);
     }
@@ -694,49 +711,40 @@ function restartButton(grid) {
     })
 }
 
-function randomWallCreate(grid) {
+function randomWallCreate(grid, defaultCol) {
     const randomWallsButton = document.querySelector('.random-btn-wall');
     randomWallsButton.addEventListener('click', () => {
         tableContentContainer.classList.remove('burger-active');
-        createRandomWallsAndWeight(event, grid);
+        createRandomWallsAndWeight(event, grid, defaultCol);
     })
 }
 
-function randomWeightCreate(grid) {
+function randomWeightCreate(grid, defaultCol) {
     const randomWeightButton = document.querySelector('.random-btn-weight');
     randomWeightButton.addEventListener('click', () => {
         tableContentContainer.classList.remove('burger-active');
-        createRandomWallsAndWeight(event, grid);
+        createRandomWallsAndWeight(event, grid, defaultCol);
     })
 }
 
-//Create random walls and weight based on the button clicked. There will be a total of 200 walls/weight
-function createRandomWallsAndWeight(event, grid) {
+//Create random walls and weight based on the button clicked. There will be a total of total nodes / 3 number of walls/weight
+function createRandomWallsAndWeight(event, grid, defaultCol) {
     if (event.target.classList.contains('random-btn-wall')) {
         var target = 'wall';
     } else {
         var target = 'weight';
     }
+
     if (!isRunning && isReset) {
         var nodesArray = getAllNodes(grid);
-        var totalNumberOfNodes = 200;
+        var totalNumberOfNodes = Math.floor(nodesArray.length / 3);
         while (totalNumberOfNodes > 0) {
             random = randomNumber(nodesArray.length);
-            if (random / 50 == 0) {
-                var row = (random / 50) - 1;
-                var col = 49;
-                if (row < 0) {
-                    row = 0;
-                }
-            } else {
-                var row = Math.floor(random / 50);
-                var col = random % 50;
-                if (row < 0) {
-                    row = 0;
-                    col = random - 1;
-                }
-            }
+
+            var row = Math.floor(random / defaultCol);
+            var col = random % defaultCol;
             var node = document.getElementById(`node-${row}-${col}`);
+
             if (!node.classList.contains('node-start')
                 && !node.classList.contains('node-finish')
                 && !node.classList.contains('weight')
