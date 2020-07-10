@@ -8,26 +8,27 @@
 
 .big-container {
   font-family: "Poppins", sans-serif;
-  height: 100vh;
-  width: 100vw;
+  height: 92.2vh;
 }
 
 :root {
   --img: url();
-  --height: 15vh;
 }
 
 /********************************* Navbar *********************************/
+.main-nav {
+  position: relative;
+}
+
 .dropdown {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: var(--height);
+  min-height: 50px;
   background-color: rgb(19, 75, 139);
 }
 
 .nav-content-container {
-  width: 25vw;
   margin-right: 5rem;
   display: flex;
   justify-content: space-around;
@@ -94,7 +95,6 @@
   outline: none;
 }
 
-/*Something strange is happening here....*/
 .algorithm:hover,
 .data-structure:hover {
   background-color: #326fa8;
@@ -129,18 +129,18 @@
 }
 
 .burger div {
-  width: 25px;
-  height: 2px;
+  width: 20px;
+  height: 2.2px;
   background-color: rgb(226, 226, 226);
-  margin: 3px;
+  margin: 2px;
   transition: all 0.3s ease;
 }
 
 /********************************* 3 main containers (table of contents, illstration and code) *********************************/
 .main-container {
   display: flex;
-  height: 85vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 }
 
 .table-contents-container {
@@ -1134,7 +1134,7 @@ li.btn {
 }
 
 /********************************* On other screens *********************************/
-@media only screen and (min-width: 1600px) {
+@media (min-width: 1600px) {
   .cell.null::before,
   .cell.null::after {
     height: 3vh;
@@ -1149,12 +1149,7 @@ li.btn {
   }
 }
 
-@media only screen and (max-width: 1400px) {
-  .algorithm-dropdown ul,
-  .datastructure-dropdown ul {
-    top: 80px;
-  }
-
+@media (max-width: 1400px) {
   .cell.null::before,
   .cell.null::after {
     height: 3vh;
@@ -1162,7 +1157,7 @@ li.btn {
   }
 }
 
-@media only screen and (max-width: 1024px) {
+@media (max-width: 1024px) {
   .main-container {
     display: flex;
     flex-direction: column;
@@ -1173,8 +1168,8 @@ li.btn {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: var(--height);
-    left: 20px;
+    min-height: 50px;
+    left: 6px;
     display: flex;
   }
 
@@ -1207,23 +1202,48 @@ li.btn {
   }
 
   .hash-table-bucket td {
-    padding: 8px !important;
+    padding: 8px;
   }
 
   .hash-function {
     background-color: white;
   }
+
+  .tutorial-text {
+    padding: 5px;
+  }
+
+  .brand {
+    font-size: 1.5em;
+  }
+
+  .algorithm-dropdown ul,
+  .datastructure-dropdown ul {
+    top: 40px;
+  }
 }
 
-@media only screen and (max-width: 768px) {
+@media (max-width: 780px) {
+  .algorithm-dropdown ul,
+  .datastructure-dropdown ul {
+    top: 70px;
+  }
+}
+
+@media (max-width: 768px) {
+  .algorithm-dropdown ul,
+  .datastructure-dropdown ul {
+    top: 30px;
+  }
+
   .start-guide,
   .finish-guide,
   .visited-guide,
   .shortest-guide,
   .wall-guide,
   .weight-guide {
-    height: 15px !important;
-    width: 15px !important;
+    height: 15px;
+    width: 15px;
   }
 
   .guide-text {
@@ -1265,8 +1285,8 @@ li.btn {
   }
 
   .node {
-    width: 15px !important;
-    height: 15px !important;
+    width: 15px;
+    height: 15px;
   }
 
   .boardContainer {
@@ -1279,17 +1299,62 @@ li.btn {
   }
 
   .array-bar {
-    width: 1px !important;
+    width: 1px;
+  }
+
+  .burger {
+    left: 30px;
+    top: 7%;
   }
 }
 
-@media (max-width: 667px) {
-  .dropdown {
-    height: 20vh;
+.burger-active {
+  transform: translateX(0%);
+}
+
+@media (max-width: 720px) {
+  .algorithm-dropdown ul,
+  .datastructure-dropdown ul {
+    top: 60px;
+  }
+
+  .burger {
+    top: 20%;
   }
 }
 
-@media only screen and (max-width: 550px) {
+@media (max-width: 590px) {
+  .burger {
+    top: 25%;
+    left: 30px;
+  }
+  .algorithm-dropdown ul,
+  .datastructure-dropdown ul {
+    top: 70px;
+  }
+}
+
+@media (max-width: 550px) {
+  .algorithm-dropdown ul,
+  .datastructure-dropdown ul {
+    top: 30px;
+  }
+  .icon-right-1 {
+    right: -20px;
+  }
+
+  .icon-right {
+    transform: scaleX(3);
+  }
+
+  .icon-right-2 {
+    right: -10px;
+  }
+
+  .hash-table-bucket td {
+    padding: 12px;
+  }
+
   .cell {
     font-size: 0.8em;
     width: 8vw;
@@ -1315,55 +1380,43 @@ li.btn {
   }
 
   .flex-container-col {
-    justify-content: flex-end !important;
+    justify-content: flex-end;
   }
 
   .text-header-hash-table {
-    font-size: 0.8em;
+    font-size: 0.7em;
   }
 
   .hash-table-cell,
   .hash-table-bucket {
     font-size: 0.7em;
   }
+
   .hash-table-cell {
     height: 3vh;
   }
+
+  .ul-algo,
+  .ul-ds {
+    font-size: 14px;
+  }
+
+  .burger {
+    top: 0;
+  }
 }
 
-.burger-active {
-  transform: translateX(0%);
-}
-
-@media only screen and (min-width: 400px) and (max-width: 550px) {
+@media (max-width: 425px) {
   .icon-right-1 {
-    right: -20px !important;
+    right: -25px;
   }
 
   .icon-right {
-    transform: scaleX(3) !important;
+    transform: scaleX(2);
   }
 
   .icon-right-2 {
-    right: -10px !important;
-  }
-
-  .hash-table-bucket td {
-    padding: 12px;
-  }
-}
-
-@media only screen and (min-width: 320px) and (max-width: 400px) {
-  .icon-right-1 {
-    right: -25px !important;
-  }
-
-  .icon-right {
-    transform: scaleX(2) !important;
-  }
-
-  .icon-right-2 {
-    right: -10px !important;
+    right: -10px;
   }
 
   .hash-table-bucket td {
@@ -1372,5 +1425,27 @@ li.btn {
 
   .tutorial-text {
     padding: 5px;
+  }
+
+  .dropdown button {
+    font-size: 0.8em;
+  }
+
+  .arrow {
+    padding: 2px;
+  }
+  .algorithm-dropdown ul,
+  .datastructure-dropdown ul {
+    width: 170px;
+  }
+}
+
+@media (max-width: 325px) {
+  .algorithm-dropdown ul,
+  .datastructure-dropdown ul {
+    width: 150px;
+  }
+  .burger {
+    left: 10px;
   }
 }

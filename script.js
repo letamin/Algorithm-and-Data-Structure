@@ -79,27 +79,19 @@ function ready() {
 
 //Display based on the selected algorithm - Path finding or Sorting
 function setContainerAlgorithm(event) {
-    if (codeContainer.classList.contains('hide')) {
-        clearScreen();
-        algorithmUL.classList.remove('visible');
-        dataStructureUL.classList.remove('visible');
-        if (event.target.classList.contains('path-finding')) {
-            getInitialGrid(event.target.innerHTML);
-        } else if (event.target.classList.contains('sort')) {
-            getInitialArraysForSort(event.target.innerHTML);
-        }
-    } else {
-        clearScreen();
+    clearScreen();
+    if (!codeContainer.classList.contains('hide')) {
         codeContainer.classList.add('hide');
-        algorithmUL.classList.remove('visible');
-        dataStructureUL.classList.remove('visible');
         tableContentContainer.classList.add('background-color');
         tableContentContainer.style.setProperty('flex', '0.1');
-        if (event.target.classList.contains('path-finding')) {
-            getInitialGrid(event.target.innerHTML);
-        } else if (event.target.classList.contains('sort')) {
-            getInitialArraysForSort(event.target.innerHTML);
-        }
+    }
+
+    algorithmUL.classList.remove('visible');
+    dataStructureUL.classList.remove('visible');
+    if (event.target.classList.contains('path-finding')) {
+        getInitialGrid(event.target.innerHTML);
+    } else if (event.target.classList.contains('sort')) {
+        getInitialArraysForSort(event.target.innerHTML);
     }
 }
 
@@ -393,57 +385,38 @@ function getInitialGrid(algorithm) {
 }
 
 function handleChoosenAlgorithm(algorithm, grid, buttonContainer, introText, defaultCol) {
+    const nodesArray = getAllNodes(grid);
+    const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
+
+    preparePathFindingAlgorithmGeneral(introText, algorithm, nodesArray, buttonContainer, grid, defaultCol);
+
     if (algorithm == 'Dijkstra') {
-        const nodesArray = getAllNodes(grid);
-        const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
-        dragNodes();
-        addIntroTextPathFinding(introText, algorithm);
-        addRestartButton(buttonContainer);
-        addRandomWallButton(buttonContainer);
-        addRandomWeightButton(buttonContainer);
-        getNodesForWalls(nodesArray);
-        getNodesForWeight(nodesArray);
-        randomWallCreate(grid, defaultCol);
-        randomWeightCreate(grid, defaultCol);
-        restartButton(grid);
+        preparePathFindingAlgorithmWeighted(buttonContainer, nodesArray, grid, defaultCol);
         visualizeButtonDijkstra(grid, visualizeButton);
     } else if (algorithm == 'Breadth-first search') {  //BFS is just Dijkstra's algorithm with all edges weight = 1, but for this visualizer, all 1 => no differences
-        const nodesArray = getAllNodes(grid);
-        const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
-        dragNodes();
-        addRestartButton(buttonContainer);
-        addRandomWallButton(buttonContainer);
-        addIntroTextPathFinding(introText, algorithm);
-        getNodesForWalls(nodesArray);
-        randomWallCreate(grid, defaultCol);
-        restartButton(grid);
         visualizeButtonDijkstra(grid, visualizeButton);
     } else if (algorithm == 'A*') {
-        const nodesArray = getAllNodes(grid);
-        const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
-        dragNodes();
-        addIntroTextPathFinding(introText, algorithm);
-        addRestartButton(buttonContainer);
-        addRandomWallButton(buttonContainer);
-        addRandomWeightButton(buttonContainer);
-        getNodesForWalls(nodesArray);
-        getNodesForWeight(nodesArray);
-        randomWallCreate(grid, defaultCol);
-        randomWeightCreate(grid, defaultCol);
-        restartButton(grid);
+        preparePathFindingAlgorithmWeighted(buttonContainer, nodesArray, grid, defaultCol);
         visualizeButtonAstart(grid, visualizeButton);
     } else if (algorithm == 'Depth-first search') {
-        const nodesArray = getAllNodes(grid);
-        const visualizeButton = addVisualizeButton(buttonContainer, algorithm);
-        dragNodes();
-        addRestartButton(buttonContainer);
-        addRandomWallButton(buttonContainer);
-        addIntroTextPathFinding(introText, algorithm);
-        getNodesForWalls(nodesArray);
-        randomWallCreate(grid, defaultCol);
-        restartButton(grid);
         visualizeButtonDFS(grid, visualizeButton);
     }
+}
+
+function preparePathFindingAlgorithmWeighted(buttonContainer, nodesArray, grid, defaultCol) {
+    addRandomWeightButton(buttonContainer);
+    getNodesForWeight(nodesArray);
+    randomWeightCreate(grid, defaultCol);
+}
+
+function preparePathFindingAlgorithmGeneral(introText, algorithm, nodesArray, buttonContainer, grid, defaultCol) {
+    dragNodes();
+    getNodesForWalls(nodesArray);
+    addRestartButton(buttonContainer);
+    addRandomWallButton(buttonContainer);
+    randomWallCreate(grid, defaultCol);
+    addIntroTextPathFinding(introText, algorithm);
+    restartButton(grid);
 }
 
 function addGuide() {
