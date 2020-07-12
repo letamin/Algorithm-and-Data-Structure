@@ -1920,7 +1920,7 @@ function addCodeImage(container, operation, dataStructure) {
     var codeImageContainer = document.createElement('div');
     codeImageContainer.classList.add('code-image-container');
     var urlImageName = dataStructure.replace(' ', '_');
-    codeImageContainer.style.setProperty('--img', `url(/image/${urlImageName}_${operation}.png)`);
+    codeImageContainer.style.setProperty('--img', `url(image/${urlImageName}_${operation}.png)`);
     container.appendChild(codeImageContainer);
 }
 
