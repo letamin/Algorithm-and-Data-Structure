@@ -52,8 +52,8 @@ var START_NODE_ROW = 0;
 var START_NODE_COL = 0;
 var FINISH_NODE_ROW = 3;
 var FINISH_NODE_COL = 3;
-var isRunning = false;
 var isReset = true;
+var isRunning = false;
 var isSorted = false;
 
 if (document.readyState == 'loading') {

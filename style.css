@@ -8,7 +8,7 @@
 
 .big-container {
   font-family: "Poppins", sans-serif;
-  height: 92.2vh;
+  height: 92.3vh;
 }
 
 :root {
@@ -1221,6 +1221,10 @@ li.btn {
   .datastructure-dropdown ul {
     top: 40px;
   }
+
+  .code {
+    font-size: 0.9em;
+  }
 }
 
 @media (max-width: 780px) {
@@ -1271,10 +1275,6 @@ li.btn {
     font-size: 1em;
   }
 
-  .table-contents-container {
-    width: 30vw;
-  }
-
   h3,
   h4 {
     font-size: 1em;
@@ -1306,6 +1306,10 @@ li.btn {
     left: 30px;
     top: 7%;
   }
+
+  .code {
+    font-size: 0.8em;
+  }
 }
 
 .burger-active {
@@ -1320,6 +1324,16 @@ li.btn {
 
   .burger {
     top: 20%;
+  }
+
+  .table-contents-container {
+    width: 30vw;
+  }
+}
+
+@media (max-width: 667px) {
+  .code {
+    font-size: 0.7em;
   }
 }
 
@@ -1377,10 +1391,6 @@ li.btn {
 
   .nav-content-container {
     margin-right: 0;
-  }
-
-  .flex-container-col {
-    justify-content: flex-end;
   }
 
   .text-header-hash-table {
